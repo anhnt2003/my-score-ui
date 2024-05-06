@@ -1,8 +1,15 @@
-<p-iconField iconPosition="left">
-    <p-inputIcon styleClass="pi pi-search" />
-    <input type="text" pInputText placeholder="Search" />
-</p-iconField>
-<p-iconField iconPosition="right">
-    <p-inputIcon styleClass="pi pi-spinner pi-spin" />
-    <input type="text" pInputText />
-</p-iconField>
+<p-inputGroup>
+    <p-inputGroupAddon>
+        <i class="fa fa-user"></i>
+    </p-inputGroupAddon>
+    <input pInputText placeholder="Username" />
+</p-inputGroup>
+<p-inputGroup>
+    <p-inputGroupAddon>$</p-inputGroupAddon>
+    <input type="text" pInputText placeholder="Price" />
+    <p-inputGroupAddon>.00</p-inputGroupAddon>
+</p-inputGroup>
+<p-inputGroup>
+    <p-inputGroupAddon>www</p-inputGroupAddon>
+    <input type="text" pInputText placeholder="Website" />
+</p-inputGroup>

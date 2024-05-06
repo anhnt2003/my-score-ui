@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, IconFieldModule, InputIconModule],
+  imports: [RouterOutlet, InputGroupModule, InputGroupAddonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

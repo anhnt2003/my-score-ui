@@ -1,0 +1,14 @@
+.nav-main {
+    width: 250px;
+    transition: width 0.2s;
+    flex-direction: column;
+    height: 100vh;
+    .nav-menu {
+        height: 100%;
+    }
+    .p-menu {
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 0px !important;
+    }
+}

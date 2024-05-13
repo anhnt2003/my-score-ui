@@ -1,1 +1,15 @@
-<p>app-nav works!</p>
+<div class="nav-main">
+    <div class="logo-main"></div>
+    <div class="nav-menu">
+        <p-menu [model]="items">
+            <ng-template pTemplate="item" let-item>
+                <ng-container *ngIf="item.route">
+                    <a [routerLink]="item.route">
+                        <span [class]="item.icon"></span>
+                        <span>{{ item.label }}</span>
+                    </a>
+                </ng-container>
+            </ng-template>
+        </p-menu>
+    </div>
+</div>

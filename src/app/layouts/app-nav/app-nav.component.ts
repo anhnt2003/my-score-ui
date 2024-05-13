@@ -1,12 +1,48 @@
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  Component,
+  OnInit,
+} from '@angular/core';
+import { Router } from '@angular/router';
+
+import {
+  MenuItem,
+  PrimeIcons,
+} from 'primeng/api';
+import { MenuModule } from 'primeng/menu';
 
 @Component({
   selector: 'app-app-nav',
   standalone: true,
-  imports: [],
+  imports: [MenuModule, CommonModule],
   templateUrl: './app-nav.component.html',
   styleUrl: './app-nav.component.scss'
 })
-export class AppNavComponent {
+export class AppNavComponent implements OnInit {
+  
+  public items: MenuItem[] | undefined;
+  constructor(private router: Router) {
+
+  }
+  ngOnInit(): void {
+    this.items = [
+      {
+          label: 'MyScore',
+          items: [
+              {
+                  label: 'Over View',
+                  icon: PrimeIcons.HOME,
+                  command: () => {
+                    this.router.navigate(['/dashboard']);
+                  }
+              },
+              {
+                  label: 'User',
+                  icon: PrimeIcons.USER
+              },
+          ]
+      }
+  ];
+  }
 
 }

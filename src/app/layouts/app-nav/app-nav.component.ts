@@ -38,7 +38,10 @@ export class AppNavComponent implements OnInit {
               },
               {
                   label: 'User',
-                  icon: PrimeIcons.USER
+                  icon: PrimeIcons.USER,
+                  command: () => {
+                    this.router.navigate(['/user-organization']);
+                  }
               },
           ]
       }

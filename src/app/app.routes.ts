@@ -35,6 +35,11 @@ export const routes: Routes = [
                 loadComponent: () =>
                     import('./routes/dashboard/components/dashboard/dashboard.component').then((c) => c.DashboardComponent)
             },
+            {
+                path: 'user-organization',
+                loadComponent: () => 
+                    import('./routes/user/components/user-organization/user-organization.component').then((c) => c.UserOrganizationComponent)
+            }
         ]
     }
 ];

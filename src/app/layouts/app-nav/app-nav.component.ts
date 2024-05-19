@@ -5,10 +5,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 
-import {
-  MenuItem,
-  PrimeIcons,
-} from 'primeng/api';
+import { MenuItem } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
 
 @Component({
@@ -31,14 +28,14 @@ export class AppNavComponent implements OnInit {
           items: [
               {
                   label: 'Over View',
-                  icon: PrimeIcons.HOME,
+                  icon: 'fa fa-home',
                   command: () => {
                     this.router.navigate(['/dashboard']);
                   }
               },
               {
                   label: 'User',
-                  icon: PrimeIcons.USER,
+                  icon: 'fa fa-user', 
                   command: () => {
                     this.router.navigate(['/user-organization']);
                   }

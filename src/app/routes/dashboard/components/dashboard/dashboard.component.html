@@ -1,1 +1,31 @@
-<p>dashboard works!</p>
+<div class="container-dashboard">
+    @if(userOrganizationProfileData$ | async; as user) {
+    <div class="profile">
+        <p-card>
+            <div class="avatar">
+                <img src="https://random.imagecdn.app/500/150">
+            </div>
+            <div class="infor">
+                <ul>
+                    <li>Email: {{ user.email }}</li>
+                    <li>Name: {{ user.userName }}</li>
+                    <li>Organization: {{ user.organizationName }}</li>
+                    <li>Position: {{ user.positionTitle }}</li>
+                    <li>Evaluation Status: {{ user.evaluationStatus }}</li>
+                </ul>
+            </div>
+        </p-card>
+    </div>
+    <div class="rating-summary">
+        <p-card header="Rating Summary">
+            <div class="chart">
+                <p-chart type="bar" height="380px" width="500" [data]="data" [options]="chartOption" />
+            </div>
+            <div class="criteria-data-main">
+                <div class="criteria-title"></div>
+                <div class="criteria-data"></div>
+            </div>
+        </p-card>
+    </div>
+    }
+</div>

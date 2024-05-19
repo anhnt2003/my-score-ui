@@ -1,5 +1,5 @@
 export const environment = {
     production: false,
-    apiEndpoint: 'http://localhost:54862',
-    gcpAuthClientId: `859528814721-7bscbvjcuc0ntag2l98qsu9535593k28.apps.googleusercontent.com`,
+    apiEndpoint: 'http://localhost:33235',
+    gcpAuthClientId: `770742140694-g5vhl81cobbs32tcmb2p29hrlmscq31c.apps.googleusercontent.com`,
 };

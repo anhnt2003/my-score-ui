@@ -1,1 +1,33 @@
-<p>user-organization works!</p>
+
+<p-table
+[value]="user"
+[paginator]="true"
+[rows]="5"
+[scrollable]="true"
+[tableStyle]="{ 'min-width': '50rem' }"
+[rowsPerPageOptions]="[5, 10, 20]"
+>
+<ng-template pTemplate="caption">
+        <div class="card">
+            <p-iconField class="icon" iconPosition="right">
+                <p-inputIcon styleClass="pi pi-search" />
+                <input type="text" pInputText placeholder="Search" />
+            </p-iconField>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th style="width:20%">ID</th>
+            <th style="width:20%">
+                Username <p-sortIcon field="username" />
+            </th>
+            <th style="width:20%">Email</th>
+            <th style="width:20%">Role</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-customer>
+        <tr>
+        </tr>
+    </ng-template>
+</p-table>
+

@@ -18,8 +18,13 @@ export const routes: Routes = [
             {
                 path: 'login',
                 loadComponent: () => import('./routes/auth/components/login/login.component').then((c) => c.LoginComponent)
-            }
+            },
         ]
+    },
+    {
+            path: 'organization-create',
+            loadComponent: () => 
+                import('./routes/organization/components/organization-page-create/organization-page-create.component').then((c) => c.OrganizationPageCreateComponent)
     },
     {
         path: '',
@@ -39,7 +44,7 @@ export const routes: Routes = [
                 path: 'user-organization',
                 loadComponent: () => 
                     import('./routes/user/components/user-organization/user-organization.component').then((c) => c.UserOrganizationComponent)
-            }
+            },
         ]
     }
 ];

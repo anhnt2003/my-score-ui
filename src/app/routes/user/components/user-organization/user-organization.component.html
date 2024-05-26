@@ -1,1 +1,28 @@
-<p>user-organization works!</p>
+<div class="container-user-org">
+    <p-table #dt2 [value]="organizationUserData" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [paginator]="true" [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']">
+        <ng-template pTemplate="caption">
+            <div class="search">
+                <p-iconField iconPosition="left" class="ml-auto">
+                    <p-inputIcon>
+                        <i class="fa fa-search"></i>
+                    </p-inputIcon>
+                    <input pInputText type="text" placeholder="Search keyword" />
+                </p-iconField>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Organization</th>
+                <th>Title</th>
+                <th>Status</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="5">No customers found.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

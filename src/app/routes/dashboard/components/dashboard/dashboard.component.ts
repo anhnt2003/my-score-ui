@@ -12,12 +12,12 @@ import {
 } from 'rxjs';
 
 import { BaseComponent } from '../../../../core/components/base.component';
-import { horizontalOptions } from '../../../../core/components/common/constant';
 import { ScoreService } from '../../../../data/services/score.service';
 import { UserService } from '../../../../data/services/user.service';
 import {
   OrganizationUserDto,
 } from '../../../../data/types/organization-user.dto';
+import { horizontalOptions } from '../../../../shared/common/constant';
 
 @Component({
   selector: 'app-dashboard',
@@ -55,7 +55,7 @@ export class DashboardComponent extends BaseComponent implements OnInit {
               { 
                   label: 'Booked', 
                   backgroundColor: 'green', 
-                  data: [4.15], 
+                  data: [5.1] 
               }, 
           ] 
       }; 

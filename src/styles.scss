@@ -7,7 +7,8 @@
 @import "assets/layouts/footer";
 //import base
 @import "assets/base/common";
-// Import Components
-@import "assets/components/login.scss";
 //import style components
+@import "assets/components/login.scss";
 @import "assets/components/dashboard";
+@import "assets/components/organization-page-create";
+@import "assets/components/user-organization"

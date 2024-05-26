@@ -1,0 +1,22 @@
+.container-user-org {
+    height: 100%;
+    padding: 0 32px;
+    .search {
+        display: flex;
+        align-items: center;
+        input {
+            padding: 10px 32px;
+        }
+        .p-input-icon {
+            margin-top: -10px !important;
+        }
+    }
+}
+
+th {
+    width: 22%;
+}
+
+p-table {
+    min-width: 75rem;
+}

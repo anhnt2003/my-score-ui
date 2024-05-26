@@ -1,0 +1,30 @@
+<div class="container category-container">
+    <p-button (click)="showDialog()" label="Thêm tiêu chí" />
+
+    <p-dialog class="dialog-container" header="Thêm tiêu chí" [modal]="true" [(visible)]="visible" [draggable]="false">
+        <span class="p-text-secondary block mb-5">Nhập tên các tiêu chí muốn thêm (Cách nhau bằng dấu ",")</span>
+        <div>
+            <label for="categoryName" class="font-semibold w-6rem">Tên tiêu chí</label>
+            <input pInputText id="categoryName" [(ngModel)]="categoryString"/>
+        </div>
+
+        <div class="button-container">
+            <p-button class="cancel-button" label="Cancel" severity="secondary" (click)="visible = false" />
+            <p-button label="Save" (click)="uploadParentCategory()" />
+        </div>
+    </p-dialog>
+
+    <table>
+        <tr>
+            <th>Tiêu chí</th>
+            <th>Xem chi tiết</th>
+        </tr>
+        @for (item of parentCategory; track item) {
+            <tr>
+                <td class="font-weight-500">{{item.name}}</td>
+                <td><p-button label="Xem chi tiết" /></td>
+            </tr>
+        }
+    </table>
+    
+</div>

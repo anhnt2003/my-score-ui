@@ -8,9 +8,12 @@ import { MessageService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ToastModule } from 'primeng/toast';
 
-import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
+import { GoogleSigninButtonModule, SocialAuthService } from '@abacritt/angularx-social-login';
 
 import { BaseComponent } from '../../../../core/components/base.component';
+import { AuthService } from '../../../../data/services/auth.service';
+import { switchMap, tap } from 'rxjs';
+import { AuthResponseDto } from '../../../../data/types/auth-response.dto';
 
 @Component({
   selector: 'app-login',
@@ -30,10 +33,23 @@ import { BaseComponent } from '../../../../core/components/base.component';
 export class LoginComponent extends BaseComponent implements OnInit{
 
   constructor(
+    private socialAuthService: SocialAuthService,
+    private authService: AuthService
   ) {
     super();
   }
 
   ngOnInit(): void {
+    this.socialAuthService.authState.pipe(
+      switchMap((userInfor) => {
+        return this.authService.verifyExternalLogin(userInfor).pipe(
+          tap((res: AuthResponseDto) => {
+            console.log(res);
+            
+          })
+        )
+      })
+    )
+    .subscribe();
   }
 }

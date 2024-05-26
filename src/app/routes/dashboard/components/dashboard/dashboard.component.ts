@@ -39,27 +39,27 @@ export class DashboardComponent extends BaseComponent implements OnInit {
    }
   
   ngOnInit(): void {
-    this.userOrganizationProfileData$ = this.userService.getUserById({
-      userId: 2,
-      organizationId: 1
-    });
+  //   this.userOrganizationProfileData$ = this.userService.getUserById({
+  //     userId: 2,
+  //     organizationId: 1
+  //   });
 
-  this.scoreService.getListScore({
-      userId: 1,
-      organizationId: 1
-    }).pipe(
-      map(data => {
-        this.data = { 
-          labels: [...data.map(item => item.categoryName)],
-          datasets: [ 
-              { 
-                  label: 'Booked', 
-                  backgroundColor: 'green', 
-                  data: [4.15], 
-              }, 
-          ] 
-      }; 
-      })
-    ).subscribe();
+  // this.scoreService.getListScore({
+  //     userId: 1,
+  //     organizationId: 1
+  //   }).pipe(
+  //     map(data => {
+  //       this.data = { 
+  //         labels: [...data.map(item => item.categoryName)],
+  //         datasets: [ 
+  //             { 
+  //                 label: 'Booked', 
+  //                 backgroundColor: 'green', 
+  //                 data: [4.15], 
+  //             }, 
+  //         ] 
+  //     }; 
+  //     })
+  //   ).subscribe();
   }
 }

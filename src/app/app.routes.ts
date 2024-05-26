@@ -39,6 +39,16 @@ export const routes: Routes = [
                 path: 'user-organization',
                 loadComponent: () => 
                     import('./routes/user/components/user-organization/user-organization.component').then((c) => c.UserOrganizationComponent)
+            },
+            {
+                path: 'category',
+                loadComponent: () => 
+                    import('./routes/category/components/category/category.component').then((c) => c.CategoryComponent)
+            },
+            {
+                path: 'child-category/:id',
+                loadComponent: () => 
+                    import('./routes/child-category/components/child-category/child-category.component').then((c) => c.ChildCategoryComponent)
             }
         ]
     }

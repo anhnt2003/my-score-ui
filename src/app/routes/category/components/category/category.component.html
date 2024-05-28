@@ -14,15 +14,21 @@
         </div>
     </p-dialog>
 
-    <table>
+    <table class="category-table">
         <tr>
             <th>Tiêu chí</th>
             <th>Xem chi tiết</th>
+            <th>Sửa tên</th>
+            <th>Xóa tiêu chí</th>
         </tr>
         @for (item of parentCategory; track item) {
             <tr>
                 <td class="font-weight-500">{{item.name}}</td>
-                <td><p-button label="Xem chi tiết" /></td>
+                <td>
+                    <p-button (click)="navigateToChild(item.id)" label="Xem chi tiết" />
+                </td>
+                <td><p-button label="Sửa" severity="warning"/></td>
+                <td><p-button label="Xóa tiêu chí" severity="danger"/></td>
             </tr>
         }
     </table>

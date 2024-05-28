@@ -1,1 +1,49 @@
-<p>child-category works!</p>
+<div class="container child-category-container">
+    <p-button (click)="showDialog()" label="Thêm kỹ năng" />
+
+    <p-dialog class="dialog-container container" header="Thêm tiêu chí" [modal]="true" [(visible)]="visible" [draggable]="false">
+        <span class="p-text-secondary block mb-5">Nhập thông tin kỹ năng muốn thêm</span>
+        <form [formGroup]="categoryForm">
+            <div class="row">
+                <label class="col col-lg-4 col-md-5">Tên kỹ năng</label>
+                <input formControlName="categoryName" pInputText class="col col-lg-7"/>
+            </div>
+    
+            <div class="row">
+                <label class="col col-lg-4 col-md-5">Trọng số (<1)</label>
+                <p-inputNumber formControlName="weighting" mode="decimal" [minFractionDigits]="1" class="col col-lg-7"/> 
+            </div>
+        </form>
+
+        <div class="button-container">
+            <p-button class="cancel-button" label="Cancel" severity="secondary" (click)="visible = false" />
+            <p-button label="Save" (click)="addCategoryTemp()"/>
+        </div>
+    </p-dialog>
+
+    <table class="category-table">
+        <tr>
+            <th>Tiêu chí</th>
+            <th>Trọng số</th>
+        </tr>
+        @for (item of categories; track item) {
+            <tr>
+                <td>
+                    <input [disabled]="inputViewable" [(ngModel)]="item.name" pInputText/>
+                </td>
+                <td>
+                    <p-inputNumber [disabled]="inputViewable" [(ngModel)]="item.weighting" mode="decimal" [minFractionDigits]="1"/> 
+                </td>
+            </tr>
+        }
+    </table>
+
+    <div class="interact-button-container">
+        @if (inputViewable == false){
+            <p-button class="save-button" (click)="cancelEditCategory()" label="Cancel" />
+            <p-button (click)="postCategory()" label="Save" />
+        } @else if (inputViewable == true){
+            <p-button (click)="editCategory()" label="Edit" />
+        }
+    </div>
+</div>

@@ -1,0 +1,38 @@
+.child-category-container {
+    .p-dialog {
+        width: 30%;
+        .row {
+            margin: 16px 0;
+            label {
+                display: flex;
+                align-items: center;
+            }
+            .p-inputwrapper {
+                padding: 0;
+            }
+        }
+        .button-container {
+            float: right;
+            .cancel-button {
+                margin-right: 12px;
+            }
+        }
+    }
+
+    .category-table {
+        width: 100%;
+        td {
+            text-align: center;
+        }
+    }
+
+    .interact-button-container{
+        width: 100%;
+        float: right;
+        .save-button {
+            button {
+                margin-right: 12px;
+            }
+        }
+    }
+}

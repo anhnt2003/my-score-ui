@@ -9,6 +9,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { TableModule } from 'primeng/table';
 
 @Component({
   selector: 'app-category',
@@ -18,7 +19,8 @@ import { Router, RouterLink } from '@angular/router';
     DialogModule,
     InputTextModule,
     FormsModule,
-    RouterLink
+    RouterLink,
+    TableModule
   ],
   templateUrl: './category.component.html',
   styleUrl: './category.component.scss'
@@ -73,7 +75,7 @@ export class CategoryComponent extends BaseComponent implements OnInit{
     this.categoryString = "";
   }
 
-  navigateToChild(id: number | undefined){
+  navigateToChild(id: number | null){
     this.router.navigateByUrl(`/child-category/${id}`);
   }
 }

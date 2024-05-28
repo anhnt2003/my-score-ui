@@ -14,14 +14,16 @@
         </div>
     </p-dialog>
 
-    <table class="category-table">
-        <tr>
-            <th>Tiêu chí</th>
-            <th>Xem chi tiết</th>
-            <th>Sửa tên</th>
-            <th>Xóa tiêu chí</th>
-        </tr>
-        @for (item of parentCategory; track item) {
+    <p-table [value]="parentCategory">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Tiêu chí</th>
+                <th>Xem chi tiết</th>
+                <th>Sửa tên</th>
+                <th>Xóa tiêu chí</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
             <tr>
                 <td class="font-weight-500">{{item.name}}</td>
                 <td>
@@ -30,7 +32,7 @@
                 <td><p-button label="Sửa" severity="warning"/></td>
                 <td><p-button label="Xóa tiêu chí" severity="danger"/></td>
             </tr>
-        }
-    </table>
+        </ng-template>
+    </p-table>
     
 </div>

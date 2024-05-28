@@ -21,12 +21,15 @@
         </div>
     </p-dialog>
 
-    <table class="category-table">
-        <tr>
-            <th>Tiêu chí</th>
-            <th>Trọng số</th>
-        </tr>
-        @for (item of categories; track item) {
+    <p-table [value]="categories" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Tiêu chí</th>
+                <th>Trọng số</th>
+                <th>Chi tiết</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
             <tr>
                 <td>
                     <input [disabled]="inputViewable" [(ngModel)]="item.name" pInputText/>
@@ -34,15 +37,18 @@
                 <td>
                     <p-inputNumber [disabled]="inputViewable" [(ngModel)]="item.weighting" mode="decimal" [minFractionDigits]="1"/> 
                 </td>
+                <td>
+                    <p-button (click)="navigateToChild(item.id)" label="Xem chi tiết" />
+                </td>
             </tr>
-        }
-    </table>
+        </ng-template>
+    </p-table>
 
     <div class="interact-button-container">
         @if (inputViewable == false){
             <p-button class="save-button" (click)="cancelEditCategory()" label="Cancel" />
             <p-button (click)="postCategory()" label="Save" />
-        } @else if (inputViewable == true){
+        } @else if (inputViewable == true && categories.length > 0){
             <p-button (click)="editCategory()" label="Edit" />
         }
     </div>

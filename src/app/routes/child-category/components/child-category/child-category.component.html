@@ -46,7 +46,7 @@
 
     <div class="interact-button-container">
         @if (inputViewable == false){
-            <p-button class="save-button" (click)="cancelEditCategory()" label="Cancel" />
+            <p-button class="cancel-button" (click)="cancelEditCategory()" label="Cancel" />
             <p-button (click)="postCategory()" label="Save" />
         } @else if (inputViewable == true && categories.length > 0){
             <p-button (click)="editCategory()" label="Edit" />

@@ -1,7 +1,9 @@
 <div class="container category-container">
+    <p-toast></p-toast>
+    <p-confirmDialog />
     <p-button (click)="showDialog()" label="Thêm tiêu chí" />
 
-    <p-dialog class="dialog-container" header="Thêm tiêu chí" [modal]="true" [(visible)]="visible" [draggable]="false">
+    <p-dialog class="dialog-container" header="Thêm tiêu chí" [modal]="true" [(visible)]="addCateVisible" [draggable]="false">
         <span class="p-text-secondary block mb-5">Nhập tên các tiêu chí muốn thêm (Cách nhau bằng dấu ",")</span>
         <div>
             <label for="categoryName" class="font-semibold w-6rem">Tên tiêu chí</label>
@@ -9,8 +11,8 @@
         </div>
 
         <div class="button-container">
-            <p-button class="cancel-button" label="Cancel" severity="secondary" (click)="visible = false" />
-            <p-button label="Save" (click)="uploadParentCategory()" />
+            <p-button class="cancel-button" label="Hủy" severity="secondary" (click)="addCateVisible = false" />
+            <p-button label="Lưu" (click)="uploadParentCategory()" />
         </div>
     </p-dialog>
 
@@ -29,10 +31,27 @@
                 <td>
                     <p-button (click)="navigateToChild(item.id)" label="Xem chi tiết" />
                 </td>
-                <td><p-button label="Sửa" severity="warning"/></td>
-                <td><p-button label="Xóa tiêu chí" severity="danger"/></td>
+                <td>
+                    <p-button label="Sửa" (click)="toggleFixNameVisible(item.id, true)" severity="warning"/>
+                </td>
+                <td>
+                    <p-button label="Xóa tiêu chí" severity="danger" (click)="deleteConfirm($event, item.id)"/>
+                </td>
             </tr>
+
+            <p-dialog class="dialog-container fixName-dialog" header="Sửa tên" [modal]="true" [(visible)]="fixNameVisible[item.id]" [draggable]="false">
+                <div>
+                    <label class="category-name">Tên tiêu chí</label>
+                    <input pInputText [(ngModel)]="item.name"/>
+                </div>
+
+                <div class="button-container">
+                    <p-button class="cancel-button" label="Hủy" severity="secondary" (click)="toggleFixNameVisible(item.id, false)" />
+                    <p-button label="Cập nhật" (click)="uploadParentCategory()" />
+                </div>
+            </p-dialog>
         </ng-template>
+       
     </p-table>
     
 </div>

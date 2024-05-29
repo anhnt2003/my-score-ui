@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import { CategoryResponseDto } from '../types/category-response.dto';
 import { CategoryDto } from '../types/category.dto';
+import { MessageRes } from '../types/message-response';
 
 @Injectable({
   providedIn: 'root'
@@ -21,5 +22,9 @@ export class CategoryService {
 
   public postCategory(categoryList: CategoryDto[]){
     return this.httpClient.post<CategoryResponseDto["data"]>(`${environment.apiEndpoint}/Category`, categoryList);
+  }
+
+  public deleteCategory(categoryId: number){
+    return this.httpClient.delete<MessageRes>(`${environment.apiEndpoint}/Category/?categoryId=${categoryId}`);
   }
 }

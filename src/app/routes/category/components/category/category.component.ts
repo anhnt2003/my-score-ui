@@ -10,6 +10,10 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TableModule } from 'primeng/table';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ToastService } from '../../../../data/services/toast.service';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-category',
@@ -20,19 +24,30 @@ import { TableModule } from 'primeng/table';
     InputTextModule,
     FormsModule,
     RouterLink,
-    TableModule
+    TableModule,
+    ConfirmDialogModule,
+    ToastModule
+  ],
+  providers: [
+    MessageService,
+    ToastService,
+    ConfirmationService
   ],
   templateUrl: './category.component.html',
   styleUrl: './category.component.scss'
 })
 export class CategoryComponent extends BaseComponent implements OnInit{
   public parentCategory: CategoryDto[] = [];
-  public visible: boolean = false;
+  public addCateVisible: boolean = false;
   public categoryString: string = "";
+  public fixNameVisible: {[key: number]: boolean} = {};
 
   constructor(
     private categoryService: CategoryService,
-    private router: Router
+    private router: Router,
+    private confirmationService: ConfirmationService,
+    private toastService: ToastService,
+    private readonly messageService: MessageService,
   ) {
     super();
   }
@@ -47,7 +62,7 @@ export class CategoryComponent extends BaseComponent implements OnInit{
   }
 
   showDialog() {
-    this.visible = true;
+    this.addCateVisible = true;
   }
 
   uploadParentCategory(){
@@ -58,7 +73,11 @@ export class CategoryComponent extends BaseComponent implements OnInit{
       name: item,
       organizationId: 2 // Fix cứng
     }));
+
     this.categoryService.postCategory(categoryReq).pipe(
+      tap(() => {
+        this.addCateVisible = false;
+      }),
       switchMap(() => {
         return this.categoryService.getCategory(2, null).pipe(
           tap((parentCategory: CategoryResponseDto) => {
@@ -75,7 +94,54 @@ export class CategoryComponent extends BaseComponent implements OnInit{
     this.categoryString = "";
   }
 
+  deleteCategory(categoryId: number){
+    this.categoryService.deleteCategory(categoryId).pipe(
+      tap((res) => {
+        this.toastService.success(res.message)
+      }),
+      catchError((err) => {
+        return of(err);
+      }),
+      switchMap(() => {
+        return this.categoryService.getCategory(2, null).pipe(
+          tap((parentCategory: CategoryResponseDto) => {
+            this.parentCategory = parentCategory.data;
+          }),
+          catchError((err) => {
+            return of(err);
+          })
+        )
+      }),
+      catchError((err) => {
+        console.log('Overall error:', err);
+        return of(err);
+      })
+    ).subscribe();
+
+  }
+
   navigateToChild(id: number | null){
     this.router.navigateByUrl(`/child-category/${id}`);
   }
+
+  toggleFixNameVisible(id: number, state: boolean) {
+    this.fixNameVisible[id] = state;
+  }
+
+  deleteConfirm(event: Event, categoryId: number) {
+    this.confirmationService.confirm({
+        target: event.target as EventTarget,
+        message: 'Xóa tiêu chí này đồng nghĩa với xóa tất cả các tiêu chí con, bạn có chắc chắn?',
+        header: 'Xác nhận',
+        icon: 'pi pi-exclamation-triangle',
+        acceptIcon:"none",
+        rejectIcon:"none",
+        rejectButtonStyleClass:"p-button-text",
+        accept: () => {
+          this.deleteCategory(categoryId);
+        },
+        reject: () => {
+        }
+    });
+}
 }

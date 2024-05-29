@@ -29,8 +29,10 @@
     .interact-button-container{
         width: 100%;
         float: right;
-        .save-button {
+        .cancel-button {
             button {
+                background-color: #5e5e5e;
+                border: #5e5e5e;
                 margin-right: 12px;
             }
         }

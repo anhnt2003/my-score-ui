@@ -1,5 +1,9 @@
 export interface OrganizationUserDto {
+    id: number;
+
     userId: number;
+
+    organizationCode: string;
 
     userName: string;
 
@@ -12,4 +16,6 @@ export interface OrganizationUserDto {
     evaluationStatus: number;
 
     positionTitle: string;
+
+    profilePicture: string;
 }

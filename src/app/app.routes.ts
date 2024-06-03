@@ -4,6 +4,8 @@ import { AppLayoutComponent } from './layouts/app-layout/app-layout.component';
 import {
   AuthLayoutComponent,
 } from './routes/auth/components/auth-layout/auth-layout.component';
+import { authGuard } from './core/guards/auth.guard';
+import { organizationExsitedGuard } from './core/guards/organization-exsited.guard';
 
 export const routes: Routes = [
     {
@@ -22,6 +24,7 @@ export const routes: Routes = [
         ]
     },
     {
+            canActivate: [authGuard],
             path: 'organization-create',
             loadComponent: () => 
                 import('./routes/organization/components/organization-page-create/organization-page-create.component').then((c) => c.OrganizationPageCreateComponent)
@@ -29,6 +32,7 @@ export const routes: Routes = [
     {
         path: '',
         component: AppLayoutComponent,
+        // canActivate: [authGuard, organizationExsitedGuard],
         children: [
             {
                 path: '',
@@ -45,6 +49,11 @@ export const routes: Routes = [
                 loadComponent: () => 
                     import('./routes/user/components/user-organization/user-organization.component').then((c) => c.UserOrganizationComponent)
             },
+            {
+                path: 'score-user-detail',
+                loadComponent: () => 
+                    import('./routes/score/components/score-detail/score-detail.component').then((c) => c.ScoreDetailComponent)
+            }
         ]
     }
 ];

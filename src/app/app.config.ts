@@ -1,6 +1,7 @@
 import {
   HttpClientModule,
   provideHttpClient,
+  withInterceptors,
 } from '@angular/common/http';
 import {
   ApplicationConfig,
@@ -15,13 +16,14 @@ import {
 } from '@abacritt/angularx-social-login';
 
 import { routes } from './app.routes';
+import { authInterceptor } from './data/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     importProvidersFrom(HttpClientModule),
     provideRouter(routes), 
     provideAnimations(), 
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor])),
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {

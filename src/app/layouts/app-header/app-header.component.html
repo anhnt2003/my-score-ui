@@ -1,2 +1,15 @@
 <div class="container-header">
+    <div class="header-left"></div>
+    <div class="main-account">
+       <div class="action" (click)="op.toggle($event)">
+        <img [src]="authService.authState.value?.avatar">
+        <span>Nguyen Tuan Anh</span>
+        <i class="fa fa-angle-down"></i>
+        <p-overlayPanel #op>
+            <a href="javascript:void(0);" class="text-red" (click)="logOut()">
+                <i class="fa-solid fa-right-to-bracket"></i> Đăng xuất
+              </a>
+        </p-overlayPanel>
+       </div>
+    </div>
 </div>

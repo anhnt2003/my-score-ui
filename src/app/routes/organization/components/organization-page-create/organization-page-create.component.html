@@ -4,13 +4,17 @@
         <form [formGroup]="registerForm" (submit)="formSubmitSubject.next()">
             <div class="form-group">
                 <label for="name">Tên tổ chức:</label>
-                <input formControlName="name" type="text" id="organizationName">
+                <input formControlName="name" type="text">
             </div>
             <div class="form-group">
                 <label for="code">Mã tổ chức:</label>
-                <input formControlName="code" type="text" id="text" name="text">
+                <input formControlName="code" type="text">
             </div>
-            <button type="submit"><i class="pi pi pi-arrow-right" style="font-size: 1.5rem"></i>Xác nhận</button>
+            <div class="form-group">
+                <label for="code">Chức danh:</label>
+                <input formControlName="positionTitle" type="text">
+            </div>
+            <button type="submit"><i class="fa fa-arrow-right"></i>Xác nhận</button>
         </form>
     </div>
 </div>

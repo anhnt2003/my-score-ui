@@ -5,11 +5,13 @@ export interface ScoreDto {
 
     organizationId: number;
 
-    scoreCaculated: number;
+    scoreCalculated: number;
 
     scoreEntered: number;
 
     categoryId: number;
+
+    parentId: number;
     
     categoryName: string;
 

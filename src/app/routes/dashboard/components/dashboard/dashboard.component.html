@@ -3,7 +3,7 @@
     <div class="profile">
         <p-card>
             <div class="avatar">
-                <img src="https://random.imagecdn.app/500/150">
+                <img src="{{ user.profilePicture }}">
             </div>
             <div class="infor">
                 <ul>
@@ -19,7 +19,7 @@
     <div class="rating-summary">
         <p-card header="Rating Summary">
             <div class="chart">
-                <p-chart type="bar" height="380px" width="500" [data]="data" [options]="chartOption" />
+                <p-chart type="bar" [data]="chartData" [options]="horizontalOptions"/>
             </div>
             <div class="criteria-data-main">
                 <div class="criteria-title"></div>

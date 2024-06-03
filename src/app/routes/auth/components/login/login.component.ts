@@ -2,15 +2,18 @@ import {
   Component,
   OnInit,
 } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 import { MessageService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ToastModule } from 'primeng/toast';
 
-import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
+import { GoogleSigninButtonModule, SocialAuthService } from '@abacritt/angularx-social-login';
 
 import { BaseComponent } from '../../../../core/components/base.component';
+import { AuthResponseDto } from '../../../../data/types/auth-response.dto';
+import { filter, switchMap, takeUntil, tap } from 'rxjs';
+import { AuthService } from '../../../../data/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +22,7 @@ import { BaseComponent } from '../../../../core/components/base.component';
     ProgressSpinnerModule,
     ToastModule,
     RouterModule,
-    GoogleSigninButtonModule
+    GoogleSigninButtonModule,
   ],
   providers: [
     MessageService
@@ -30,10 +33,17 @@ import { BaseComponent } from '../../../../core/components/base.component';
 export class LoginComponent extends BaseComponent implements OnInit{
 
   constructor(
+    private authService: AuthService,
+    private router: Router
   ) {
     super();
   }
 
   ngOnInit(): void {
+    this.authService.isAuthenticated$.pipe(
+      filter((isAuthenticated) => isAuthenticated),
+      tap(() => this.router.navigate([''])),
+      takeUntil(this.destroyed$)
+    ).subscribe();
   }
 }

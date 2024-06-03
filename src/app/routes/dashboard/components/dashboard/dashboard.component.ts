@@ -9,6 +9,8 @@ import { ChartModule } from 'primeng/chart';
 import {
   map,
   Observable,
+  takeUntil,
+  tap,
 } from 'rxjs';
 
 import { BaseComponent } from '../../../../core/components/base.component';
@@ -17,7 +19,9 @@ import { UserService } from '../../../../data/services/user.service';
 import {
   OrganizationUserDto,
 } from '../../../../data/types/organization-user.dto';
-import { horizontalOptions } from '../../../../shared/common/constant';
+import { ChartData } from 'chart.js';
+import { ChartOptions } from '../../../../shared/common/constants';
+import { OrganizationService } from '../../../../data/services/organization.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,39 +31,47 @@ import { horizontalOptions } from '../../../../shared/common/constant';
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent extends BaseComponent implements OnInit {
-  public data: any;
-  public chartOption = horizontalOptions;
+  public chartData: ChartData | undefined;
   public userOrganizationProfileData$ = new Observable<OrganizationUserDto>();
+  public horizontalOptions = ChartOptions;
 
   constructor(
-    private readonly userService: UserService,
+    private readonly organizationService: OrganizationService,
     private readonly scoreService: ScoreService
   ) {
     super();
    }
   
   ngOnInit(): void {
-    this.userOrganizationProfileData$ = this.userService.getUserById({
-      userId: 2,
-      organizationId: 1
-    });
+    this.initProfileUser();
+    this.initChartData();
+  }
 
-  this.scoreService.getListScore({
+  private initChartData() {
+    this.scoreService.getListScore({
       userId: 1,
       organizationId: 1
     }).pipe(
-      map(data => {
-        this.data = { 
-          labels: [...data.map(item => item.categoryName)],
-          datasets: [ 
-              { 
-                  label: 'Booked', 
-                  backgroundColor: 'green', 
-                  data: [5.1] 
-              }, 
-          ] 
-      }; 
-      })
+      map((dataScore) => dataScore.filter((item) => item.parentId == null)),
+      tap(data => {
+        this.chartData = {
+          labels: [...data.map((item) => item.categoryName)],
+          datasets: [
+            {
+              label: 'Booked',
+              backgroundColor: 'green',
+              data: [...data.map((item) => item.scoreCalculated)]
+            },
+          ]
+        }
+      }),
+      takeUntil(this.destroyed$)
     ).subscribe();
+  }
+
+  private initProfileUser() {
+    this.userOrganizationProfileData$ = this.organizationService.getPagedOrganizationUser({ userId: 1, organizationId: 1, take: 1, skip: 0 }).pipe(
+      map((response) => response.data[0])
+    );
   }
 }

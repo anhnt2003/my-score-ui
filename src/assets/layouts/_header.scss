@@ -1,0 +1,35 @@
+.container-header {
+    background-color: #f9f9f9;
+    margin-bottom: 20px;
+
+    .main-account {
+        height: 60px;
+        display: flex;
+        justify-content: end;
+        align-items: center;
+        margin-right: 60px;
+
+        .action {
+            display: flex;
+            align-items: center;
+        }
+
+        img {
+            max-width: 40px;
+            cursor: pointer;
+            border-radius: 100%;
+            margin-right: 5px;
+        }
+
+        span {
+            font-size: 16;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        i {
+            cursor: pointer;
+            font-size: 20px;
+        }
+    }
+}

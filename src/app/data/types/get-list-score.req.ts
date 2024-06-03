@@ -1,5 +1,4 @@
-export interface GetListScoreReq {
-    organizationId: number;
+import { OrganizationUserReq } from "./organization-user.req";
 
-    userId: number;
+export interface GetListScoreReq extends OrganizationUserReq {
 }

@@ -3,6 +3,8 @@ export interface AuthResponseDto {
 
     userName: string;
 
+    avatar: string;
+
     email: string;
 
     token: string;

@@ -1,4 +1,11 @@
-export const horizontalOptions = {
+export const DefaultPagingOptions = {
+    pageSize: 5,
+    pageSizeOptions: [5, 10, 15]
+}
+
+
+
+export const ChartOptions = {
     indexAxis: 'y',
     plugins: {
         legend: {

@@ -11,16 +11,20 @@ import {
 } from '@angular/forms';
 
 import {
+  catchError,
   filter,
+  of,
   Subject,
   switchMap,
   takeUntil,
+  tap,
 } from 'rxjs';
 
 import { BaseComponent } from '../../../../core/components/base.component';
 import {
   OrganizationService,
 } from '../../../../data/services/organization.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-organization-page-create',
@@ -38,7 +42,8 @@ export class OrganizationPageCreateComponent extends BaseComponent implements On
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly organizationService: OrganizationService
+    private readonly organizationService: OrganizationService,
+    private router: Router
   ) {
     super();
   }
@@ -46,12 +51,18 @@ export class OrganizationPageCreateComponent extends BaseComponent implements On
   ngOnInit(): void {
     this.initRegisterForm();
     this.submitCreateForm();
+    this.organizationService.existedOrganization$.pipe(
+      filter((existedOrganization) => existedOrganization),
+      tap(() => this.router.navigate([''])),
+      takeUntil(this.destroyed$)
+    ).subscribe();
   }
 
   private initRegisterForm(): void {
     this.registerForm = this.fb.group({
       name: [, Validators.required],
-      code: ['', Validators.nullValidator]
+      code: [, Validators.nullValidator],
+      positionTitle: [, Validators.required]
     });
   }
 
@@ -60,8 +71,11 @@ export class OrganizationPageCreateComponent extends BaseComponent implements On
       filter(() => this.registerForm.valid),
       switchMap(() => this.organizationService.createOrganization({
         name: this.registerForm.value.name,
-        code: this.registerForm.value.code
-      })),
+        code: this.registerForm.value.code,
+        positionTitle: this.registerForm.value.positionTitle
+      }).pipe(
+        catchError(() => of(null)),
+      )),
       takeUntil(this.destroyed$)
     ).subscribe();
   }

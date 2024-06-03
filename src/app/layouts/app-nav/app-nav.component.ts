@@ -16,7 +16,7 @@ import { MenuModule } from 'primeng/menu';
   styleUrl: './app-nav.component.scss'
 })
 export class AppNavComponent implements OnInit {
-  
+
   public items: MenuItem[] | undefined;
   constructor(private router: Router) {
 
@@ -24,25 +24,32 @@ export class AppNavComponent implements OnInit {
   ngOnInit(): void {
     this.items = [
       {
-          label: 'MyScore',
-          items: [
-              {
-                  label: 'Over View',
-                  icon: 'fa fa-home',
-                  command: () => {
-                    this.router.navigate(['/dashboard']);
-                  }
-              },
-              {
-                  label: 'User',
-                  icon: 'fa fa-user', 
-                  command: () => {
-                    this.router.navigate(['/user-organization']);
-                  }
-              },
-          ]
+        label: 'MyScore',
+        items: [
+          {
+            label: 'Over View',
+            icon: 'fa fa-home',
+            command: () => {
+              this.router.navigate(['/dashboard']);
+            }
+          },
+          {
+            label: 'Performance',
+            icon: 'fa fa-graduation-cap',
+            command: () => {
+              this.router.navigate(['/score-user-detail']);
+            }
+          },
+          {
+            label: 'User',
+            icon: 'fa fa-user',
+            command: () => {
+              this.router.navigate(['/user-organization']);
+            }
+          }
+        ]
       }
-  ];
+    ];
   }
 
 }

@@ -12,7 +12,6 @@ import { LOCAL_STORAGE_ORGANIZATION_KEY } from '../../core/common/constants';
 import { OrganizationDto } from '../types/organization.dto';
 import { CreateOrganizationUserReq } from '../types/create-organization-user.req';
 import { DeleteOrganizationUserReq } from '../types/delete-organization-user.req';
-import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'

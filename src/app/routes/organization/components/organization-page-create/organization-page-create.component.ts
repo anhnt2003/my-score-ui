@@ -25,6 +25,7 @@ import {
   OrganizationService,
 } from '../../../../data/services/organization.service';
 import { Router } from '@angular/router';
+import { LOCAL_STORAGE_ORGANIZATION_KEY } from '../../../../core/common/constants';
 
 @Component({
   selector: 'app-organization-page-create',
@@ -77,6 +78,13 @@ export class OrganizationPageCreateComponent extends BaseComponent implements On
         catchError(() => of(null)),
       )),
       takeUntil(this.destroyed$)
-    ).subscribe();
+    ).subscribe((response) => {
+      if(response) {
+        localStorage[LOCAL_STORAGE_ORGANIZATION_KEY] = JSON.stringify(response);
+        setTimeout(() => {
+          location.reload();
+        }, 1500);
+      }
+    });
   }
 }

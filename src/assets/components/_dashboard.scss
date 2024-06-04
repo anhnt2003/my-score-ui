@@ -25,6 +25,14 @@ app-user-organization {
 p-chart {
     height: 380px;
     width: 500px;
+    position: absolute;
+
+    canvas {
+        display: block;
+    box-sizing: border-box;
+    height: 250px;
+    width: 500px;
+    }
 }
 
 p-card {

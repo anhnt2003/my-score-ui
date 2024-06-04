@@ -49,7 +49,7 @@ export class AppNavComponent implements OnInit {
           },
             {
                 label: 'Add Category',
-                icon: 'fa fa-user', 
+                icon: 'fa fa-star', 
                 command: () => {
                   this.router.navigate(['/category']);
                 }

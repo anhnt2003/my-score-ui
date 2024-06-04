@@ -15,7 +15,6 @@
                 <th>Email</th>
                 <th>Title</th>
                 <th>Status</th>
-                <th style="width: 5rem"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-data>
@@ -23,12 +22,6 @@
                 <td>{{ data.email }}</td>
                 <td>{{ data.positionTitle }}</td>
                 <td>{{ data.evaluationStatus }}</td>
-                <td>
-                    <div class="button-action">
-                        <button type="button" pButton pRipple icon="pi pi-user-edit">
-                        </button>
-                    </div>
-                </td>
             </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">

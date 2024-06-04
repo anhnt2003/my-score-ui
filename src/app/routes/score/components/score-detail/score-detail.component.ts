@@ -23,6 +23,8 @@ import { BaseComponent } from '../../../../core/components/base.component';
 import { ScoreService } from '../../../../data/services/score.service';
 import { ScoreUserDto } from '../../../../data/types/score-user.dto';
 import { DefaultPagingOptions } from '../../../../shared/common/constants';
+import { OrganizationService } from '../../../../data/services/organization.service';
+import { AuthService } from '../../../../data/services/auth.service';
 
 @Component({
   selector: 'app-score-detail',
@@ -38,6 +40,8 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
   public totalCountData: number = 0;
   public searchTermSubject = new Subject<string>();
   public paginatorSubject = new Subject<void>();
+  public userId = this.authService.getAuthState().userId ?? 0;
+  public organizationId = this.organizationService.getOrganizationState().id ?? 0;
 
   private paginatorChanged$ = this.paginatorSubject.asObservable();
   private searchTermChanged$ = this.searchTermSubject.asObservable();
@@ -45,12 +49,16 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
   @ViewChild('searchTerm') searchTermEl: ElementRef | undefined;
   @ViewChild('paginator') paginator: PaginatorState | undefined;
 
-  constructor(private readonly scoreService: ScoreService) {
+  constructor(
+    private readonly scoreService: ScoreService,
+    private readonly organizationService: OrganizationService,
+    private authService: AuthService,
+  ) {
     super();
   }
 
   ngOnInit(): void {
-    this.loadPagedScoreUser(1);
+    this.loadPagedScoreUser(this.organizationId);
   }
 
   ngAfterViewInit(): void {

@@ -22,6 +22,7 @@ import {
 import { ChartData } from 'chart.js';
 import { ChartOptions } from '../../../../shared/common/constants';
 import { OrganizationService } from '../../../../data/services/organization.service';
+import { AuthService } from '../../../../data/services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -34,9 +35,12 @@ export class DashboardComponent extends BaseComponent implements OnInit {
   public chartData: ChartData | undefined;
   public userOrganizationProfileData$ = new Observable<OrganizationUserDto>();
   public horizontalOptions = ChartOptions;
+  public userId = this.authService.getAuthState().userId ?? 0;
+  public organizationId = this.organizationService.getOrganizationState().id ?? 0;
 
   constructor(
     private readonly organizationService: OrganizationService,
+    private authService: AuthService,
     private readonly scoreService: ScoreService
   ) {
     super();
@@ -49,8 +53,8 @@ export class DashboardComponent extends BaseComponent implements OnInit {
 
   private initChartData() {
     this.scoreService.getListScore({
-      userId: 1,
-      organizationId: 1
+      userId: this.userId,
+      organizationId: this.organizationId
     }).pipe(
       map((dataScore) => dataScore.filter((item) => item.parentId == null)),
       tap(data => {
@@ -58,19 +62,20 @@ export class DashboardComponent extends BaseComponent implements OnInit {
           labels: [...data.map((item) => item.categoryName)],
           datasets: [
             {
-              label: 'Booked',
+              label: 'Skill',
               backgroundColor: 'green',
               data: [...data.map((item) => item.scoreCalculated)]
             },
           ]
-        }
+        };
+        console.log(this.chartData.datasets)
       }),
       takeUntil(this.destroyed$)
     ).subscribe();
   }
 
   private initProfileUser() {
-    this.userOrganizationProfileData$ = this.organizationService.getPagedOrganizationUser({ userId: 1, organizationId: 1, take: 1, skip: 0 }).pipe(
+    this.userOrganizationProfileData$ = this.organizationService.getPagedOrganizationUser({ userId: this.userId, organizationId: this.organizationId, take: 10, skip: 0 }).pipe(
       map((response) => response.data[0])
     );
   }

@@ -9,5 +9,9 @@ export interface ScoreUserDto {
 
     email: string;
 
+    positionTitle: string;
+
+    evaluationStatus: number;
+
     scores: ScoreDto[];
 }

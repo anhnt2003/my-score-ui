@@ -75,6 +75,8 @@ export class UserOrganizationComponent extends BaseComponent implements OnInit, 
   public perPageModel: number = 0;
   public searchTermSubject = new Subject<string>();
   public paginatorSubject = new Subject<void>();
+  public userId = this.authService.getAuthState().userId ?? 0;
+  public organizationId = this.organizationService.getOrganizationState().id ?? 0;
 
   private paginatorChanged$ = this.paginatorSubject.asObservable();
   private searchTermChanged$ = this.searchTermSubject.asObservable();
@@ -90,7 +92,7 @@ export class UserOrganizationComponent extends BaseComponent implements OnInit, 
   }
 
   ngOnInit(): void {
-    this.loadPagedOrganizationUser(1, 0, 10);
+    this.loadPagedOrganizationUser(10008);
   }
 
   ngAfterViewInit(): void {
@@ -98,7 +100,7 @@ export class UserOrganizationComponent extends BaseComponent implements OnInit, 
       takeUntil(this.destroyed$)
     ).subscribe(() => {
       this.loadPagedOrganizationUser(
-        1, 
+        this.organizationId, 
         this.paginator?.page, 
         this.paginator?.pageCount, 
         this.searchTermEl?.nativeElement.value ?? null);
@@ -120,13 +122,13 @@ export class UserOrganizationComponent extends BaseComponent implements OnInit, 
 
   public handleAddUser() {
     this.organizationService.CreateOrganizationUser({
-      organizationId: 1,
+      organizationId: this.organizationId,
       userId: this.selectedUserModel?.id ?? 0,
       positionTitle: this.positionTitleModel ?? ''
     }).pipe(
       takeUntil(this.destroyed$)
     ).subscribe((result) => {
-      this.loadPagedOrganizationUser(1, this.paginator?.page, this.paginator?.pageCount, this.searchTermEl?.nativeElement.value);
+      this.loadPagedOrganizationUser(this.organizationId, this.paginator?.page, this.paginator?.pageCount, this.searchTermEl?.nativeElement.value);
       this.visibleAddUserDialog = false;
     })
   }

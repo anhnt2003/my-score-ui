@@ -26,6 +26,10 @@ export class OrganizationService {
   ) 
   {}
 
+  public getOrganizationState() {
+    return this.organizationState.getValue();
+  }
+
   public createOrganization(params: CreateOrganizationReq) {
     return this.httpClient.post(`${environment.apiEndpoint}/organization`, params);
   }

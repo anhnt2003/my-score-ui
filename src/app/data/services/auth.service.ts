@@ -66,6 +66,10 @@ export class AuthService {
     ).subscribe()
   }
 
+  public getAuthState() {
+    return this.authState.value;
+  }
+
   public verifyExternalLogin(externalLogin: ExternalLoginDto){
     return this.httpClient.post<AuthResponseDto>(`${environment.apiEndpoint}/Auth`, externalLogin);
   }

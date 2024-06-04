@@ -46,6 +46,20 @@ export class AppNavComponent implements OnInit {
             command: () => {
               this.router.navigate(['/user-organization']);
             }
+          },
+            {
+                label: 'Add Category',
+                icon: 'fa fa-user', 
+                command: () => {
+                  this.router.navigate(['/category']);
+                }
+            },
+          {
+            label: 'Organization',
+            icon: 'fa fa-bars',
+            command: () => {
+              this.router.navigate(['/organization-page-list']);
+            }
           }
         ]
       }

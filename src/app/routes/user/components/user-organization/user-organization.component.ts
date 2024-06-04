@@ -5,28 +5,45 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
+import {
+  AutoCompleteCompleteEvent,
+  AutoCompleteModule,
+} from 'primeng/autocomplete';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { FloatLabelModule } from 'primeng/floatlabel';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
+import {
+  PaginatorModule,
+  PaginatorState,
+} from 'primeng/paginator';
 import { TableModule } from 'primeng/table';
-import { DialogModule } from 'primeng/dialog';
+import {
+  catchError,
+  debounceTime,
+  filter,
+  merge,
+  of,
+  Subject,
+  takeUntil,
+  tap,
+} from 'rxjs';
+
 import { BaseComponent } from '../../../../core/components/base.component';
+import { AuthService } from '../../../../data/services/auth.service';
 import {
   OrganizationService,
 } from '../../../../data/services/organization.service';
+import { UserService } from '../../../../data/services/user.service';
 import {
   OrganizationUserDto,
 } from '../../../../data/types/organization-user.dto';
-import { DefaultPagingOptions } from '../../../../shared/common/constants';
-import { ButtonModule } from 'primeng/button';
-import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
-import { FormsModule } from '@angular/forms';
-import { Subject, catchError, debounceTime, filter, merge, of, takeUntil, tap } from 'rxjs';
-import { PaginatorModule, PaginatorState } from 'primeng/paginator';
-import { UserService } from '../../../../data/services/user.service';
 import { UserDto } from '../../../../data/types/user.dto';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { InputTextModule } from 'primeng/inputtext';
+import { DefaultPagingOptions } from '../../../../shared/common/constants';
 
 @Component({
   selector: 'app-user-organization',
@@ -49,12 +66,13 @@ import { InputTextModule } from 'primeng/inputtext';
 export class UserOrganizationComponent extends BaseComponent implements OnInit, AfterViewInit {
 
   public organizationUserData: OrganizationUserDto[] = [];
+  public totalCountData: number = 0;
   public pagingOptions = DefaultPagingOptions;
   public visibleAddUserDialog = false;
   public listUsersFound: UserDto[] = [];
-  public selectedUserModel: number | undefined;
+  public selectedUserModel: UserDto | undefined;
   public positionTitleModel: string | undefined;
-
+  public perPageModel: number = 0;
   public searchTermSubject = new Subject<string>();
   public paginatorSubject = new Subject<void>();
 
@@ -65,7 +83,8 @@ export class UserOrganizationComponent extends BaseComponent implements OnInit, 
   @ViewChild('paginator') paginator: PaginatorState | undefined;
   constructor(
     private readonly organizationService: OrganizationService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    public authService: AuthService
   ) {
     super();
   }
@@ -82,7 +101,7 @@ export class UserOrganizationComponent extends BaseComponent implements OnInit, 
         1, 
         this.paginator?.page, 
         this.paginator?.pageCount, 
-        this.searchTermEl?.nativeElement.value);
+        this.searchTermEl?.nativeElement.value ?? null);
     });
   }
 
@@ -100,7 +119,16 @@ export class UserOrganizationComponent extends BaseComponent implements OnInit, 
   }
 
   public handleAddUser() {
-   
+    this.organizationService.CreateOrganizationUser({
+      organizationId: 1,
+      userId: this.selectedUserModel?.id ?? 0,
+      positionTitle: this.positionTitleModel ?? ''
+    }).pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe((result) => {
+      this.loadPagedOrganizationUser(1, this.paginator?.page, this.paginator?.pageCount, this.searchTermEl?.nativeElement.value);
+      this.visibleAddUserDialog = false;
+    })
   }
 
   private loadPagedOrganizationUser(organizationId: number, pageIndex = 0, pageSize = DefaultPagingOptions.pageSize , searchTerm?: string) {
@@ -108,13 +136,14 @@ export class UserOrganizationComponent extends BaseComponent implements OnInit, 
       organizationId: organizationId, 
       take: pageSize, 
       skip: pageSize * pageIndex, 
-      searchTerm: searchTerm 
+      searchTerm: searchTerm ?? ''
     }).pipe(
       takeUntil(this.destroyed$)
     )
     .subscribe(reponse => {
       this.organizationUserData = reponse.data;
-      console.log('fetch data organization user');
+      this.totalCountData = reponse.total;
+      console.log('fetch data organization user successful');
     });
   }
 }

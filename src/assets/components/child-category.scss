@@ -1,0 +1,40 @@
+.child-category-container {
+    .p-dialog {
+        width: 30%;
+        .row {
+            margin: 16px 0;
+            label {
+                display: flex;
+                align-items: center;
+            }
+            .p-inputwrapper {
+                padding: 0;
+            }
+        }
+        .button-container {
+            float: right;
+            .cancel-button {
+                margin-right: 12px;
+            }
+        }
+    }
+
+    .category-table {
+        width: 100%;
+        td {
+            text-align: center;
+        }
+    }
+
+    .interact-button-container{
+        width: 100%;
+        float: right;
+        .cancel-button {
+            button {
+                background-color: #5e5e5e;
+                border: #5e5e5e;
+                margin-right: 12px;
+            }
+        }
+    }
+}

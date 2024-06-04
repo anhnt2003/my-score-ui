@@ -67,6 +67,9 @@ p-card {
 
 .infor {
     flex: 1;
+    li {
+        padding: 5px 10px;
+    }
 }
 
 @media (max-width: 768px) {

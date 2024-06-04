@@ -1,5 +1,5 @@
 export interface CategoryDto {
-    id: number;
+    id?: number;
 
     name: string;
 
@@ -9,7 +9,7 @@ export interface CategoryDto {
 
     parentId?: number;
 
-    createdDate: Date;
+    createdDate?: Date;
 
     modifiedDate?: Date;
 }

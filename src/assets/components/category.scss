@@ -1,0 +1,28 @@
+.category-container {
+    .dialog-container {
+        width: 30%;
+        label {
+            margin-right: 12px;
+        }
+        .button-container {
+            float: right;
+            margin-top: 24px;
+            .cancel-button {
+                margin-right: 12px;
+            }
+        }
+
+        .fixName-dialog {
+            .category-name {
+                margin-right: 12px;
+            }
+        }
+    }
+
+    .category-table {
+        width: 100%;
+        td {
+            text-align: center;
+        }
+    }
+}

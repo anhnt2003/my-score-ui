@@ -1,11 +1,13 @@
 import { Routes } from '@angular/router';
 
+import { authGuard } from './core/guards/auth.guard';
+import {
+  organizationExsitedGuard,
+} from './core/guards/organization-exsited.guard';
 import { AppLayoutComponent } from './layouts/app-layout/app-layout.component';
 import {
   AuthLayoutComponent,
 } from './routes/auth/components/auth-layout/auth-layout.component';
-import { authGuard } from './core/guards/auth.guard';
-import { organizationExsitedGuard } from './core/guards/organization-exsited.guard';
 
 export const routes: Routes = [
     {
@@ -24,15 +26,15 @@ export const routes: Routes = [
         ]
     },
     {
-            canActivate: [authGuard],
-            path: 'organization-create',
-            loadComponent: () => 
-                import('./routes/organization/components/organization-page-create/organization-page-create.component').then((c) => c.OrganizationPageCreateComponent)
+        path: 'organization-create',
+        canActivate: [authGuard],
+        loadComponent: () => 
+            import('./routes/organization/components/organization-page-create/organization-page-create.component').then((c) => c.OrganizationPageCreateComponent)
     },
     {
         path: '',
+        canActivate: [authGuard, organizationExsitedGuard],
         component: AppLayoutComponent,
-        // canActivate: [authGuard, organizationExsitedGuard],
         children: [
             {
                 path: '',
@@ -45,14 +47,29 @@ export const routes: Routes = [
                     import('./routes/dashboard/components/dashboard/dashboard.component').then((c) => c.DashboardComponent)
             },
             {
+                path: 'score-user-detail',
+                loadComponent: () => 
+                    import('./routes/score/components/score-detail/score-detail.component').then((c) => c.ScoreDetailComponent)
+            },
+            {
                 path: 'user-organization',
                 loadComponent: () => 
                     import('./routes/user/components/user-organization/user-organization.component').then((c) => c.UserOrganizationComponent)
             },
-            {
-                path: 'score-user-detail',
+  {
+                path: 'category',
                 loadComponent: () => 
-                    import('./routes/score/components/score-detail/score-detail.component').then((c) => c.ScoreDetailComponent)
+                    import('./routes/category/components/category/category.component').then((c) => c.CategoryComponent)
+            },
+            {
+                path: 'child-category/:id',
+                loadComponent: () => 
+                    import('./routes/child-category/components/child-category/child-category.component').then((c) => c.ChildCategoryComponent)
+            },
+            {
+                path: 'organization-page-list',
+                loadComponent: () => 
+                    import('./routes/organization/components/organization-page-list/organization-page-list.component').then((c) => c.OrganizationPageListComponent)
             }
         ]
     }

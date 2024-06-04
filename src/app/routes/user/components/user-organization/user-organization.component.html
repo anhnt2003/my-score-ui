@@ -1,54 +1,40 @@
 <div class="container-user-org">
     <p-table #dt2 [value]="organizationUserData" dataKey="id">
         <ng-template pTemplate="caption">
-           <div class="header-action">
-            <div class="search">
-                <p-iconField iconPosition="left" class="ml-auto">
-                    <p-inputIcon>
-                        <i class="fa fa-search"></i>
-                    </p-inputIcon>
-                    <input pInputText 
-                           type="text" 
-                           #searchTerm
-                           (keyup)="searchTermSubject.next(searchTerm.value)"
-                           placeholder="Tìm kiếm"/>
-                </p-iconField>
-            </div>
-            <div class="button-add">
-                <button icon="pi pi-plus" 
-                        pButton 
-                        pRipple 
-                        (click)="openAddUserDialog()"
-                        label="Thêm nhân viên" 
-                        class="p-button-success">
+            <div class="header-action">
+                <div class="search">
+                    <p-iconField iconPosition="left" class="ml-auto">
+                        <p-inputIcon>
+                            <i class="fa fa-search"></i>
+                        </p-inputIcon>
+                        <input pInputText type="text" #searchTerm (keyup)="searchTermSubject.next(searchTerm.value)" placeholder="Tìm kiếm" />
+                    </p-iconField>
+                </div>
+                <div class="button-add">
+                    <button icon="pi pi-plus" pButton pRipple (click)="openAddUserDialog()" label="Thêm nhân viên" class="p-button-success">
                 </button>
-                <p-dialog header="Thêm nhân viên vào tổ chức" [modal]="true" [(visible)]="visibleAddUserDialog">
-                    <span class="text-span">Tìm kiếm bằng username, hoặc email</span>
-                    <p-autoComplete [(ngModel)]="selectedUserModel"
-                                    placeholder="Tìm kiếm" 
-                                    [suggestions]="listUsersFound" 
-                                    (completeMethod)="userFilter($event)" 
-                                    field="userName">
-                        <ng-template let-user pTemplate="item">
-                            <div class="box-select">
-                                <img [src]="user.avatar" 
-                                     style="width: 18px"/>
-                                <div class="info">{{ user.email }}</div>
-                            </div>
-                        </ng-template>
-                    </p-autoComplete>
-                    <div class="title">
-                        <p-floatLabel>
-                            <input type="text" pInputText [(ngModel)]="positionTitleModel" />
-                            <label for="positionTitle">Chức danh</label>
-                        </p-floatLabel>
-                    </div>
-                    <div class="button-footer">
-                        <p-button label="Xác nhận" (click)="handleAddUser()" />
-                    </div>
-                </p-dialog>
+                    <p-dialog header="Thêm nhân viên vào tổ chức" [modal]="true" [(visible)]="visibleAddUserDialog">
+                        <span class="text-span">Tìm kiếm bằng username, hoặc email</span>
+                        <p-autoComplete [(ngModel)]="selectedUserModel" placeholder="Tìm kiếm" [suggestions]="listUsersFound" (completeMethod)="userFilter($event)" field="userName">
+                            <ng-template let-user pTemplate="item">
+                                <div class="box-select">
+                                    <img [src]="user.avatar" style="width: 18px" />
+                                    <div class="info">{{ user.email }}</div>
+                                </div>
+                            </ng-template>
+                        </p-autoComplete>
+                        <div class="title">
+                            <p-floatLabel>
+                                <input type="text" pInputText [(ngModel)]="positionTitleModel" />
+                                <label for="positionTitle">Chức danh</label>
+                            </p-floatLabel>
+                        </div>
+                        <div class="button-footer">
+                            <p-button label="Xác nhận" (click)="handleAddUser()" />
+                        </div>
+                    </p-dialog>
+                </div>
             </div>
-           </div>
         </ng-template>
         <ng-template pTemplate="header">
             <tr>
@@ -56,8 +42,7 @@
                 <th>Email</th>
                 <th>Organization</th>
                 <th>Title</th>
-                <th>Status</th>
-                <th style="width: 5rem"></th>
+                <th></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-data>
@@ -66,19 +51,14 @@
                 <td>{{ data.email }}</td>
                 <td>{{ data.organizationName }}</td>
                 <td>{{ data.positionTitle }}</td>
-                <td>{{ data.evaluationStatus }}</td>
-                <button 
-                    type="button" 
-                    pButton 
-                    pRipple 
-                    icon="pi pi-times">
-                </button>
-                <button 
-                    type="button" 
-                    pButton 
-                    pRipple 
-                    icon="pi-user-edit">
-                </button>
+                <td>
+                    <div class="button-action">
+                        <button type="button" pButton pRipple icon="pi pi-user-edit">
+                        </button> @if(data.id != 1) {
+                        <button type="button" pButton pRipple severity="danger" icon="pi pi-times">
+                        </button> }
+                    </div>
+                </td>
             </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
@@ -88,19 +68,9 @@
         </ng-template>
     </p-table>
     <div class="pagination">
-        <span class="mx-1 text-color">Items per page: </span>
-        <p-dropdown [options]="pagingOptions.pageSizeOptions" 
-                    optionLabel="label" 
-                    optionValue="value" 
-                    [(ngModel)]="pagingOptions.pageSize" 
-                    (ngModelChange)="0" />
-        <p-paginator [rows]="pagingOptions.pageSize" 
-                     #paginator
-                     [totalRecords]="120" 
-                     (onPageChange)="paginatorSubject.next()" 
-                     [showCurrentPageReport]="true"
-                     currentPageReportTemplate="{first} - {last} of {totalRecords}" 
-                     [showPageLinks]="false" 
-                     [showFirstLastIcon]="false"></p-paginator>
+        <span class="mx-1 text-color">số lượng trong trang: </span>
+        <p-dropdown [options]="pagingOptions.pageSizeOptions" optionLabel="label" optionValue="value" [(ngModel)]="pagingOptions.pageSize" (ngModelChange)="perPageModel" />
+        <p-paginator [first]="perPageModel" [rows]="pagingOptions.pageSize" #paginator [totalRecords]="totalCountData" (onPageChange)="paginatorSubject.next()" [showCurrentPageReport]="true" currentPageReportTemplate="{first} - {last} of {totalRecords}" [showPageLinks]="false"
+            [showFirstLastIcon]="false"></p-paginator>
     </div>
 </div>

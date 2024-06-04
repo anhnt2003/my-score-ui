@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+
 @import "../node_modules/bootstrap/dist/css/bootstrap-grid.css";
 @import "primeicons/primeicons.css";
 //import style layouts
@@ -9,8 +10,11 @@
 //import base
 @import "assets/base/common";
 @import "assets/abstracts/variable.scss";
-//import style components
+// Import Components
 @import "assets/components/login.scss";
+@import "assets/components/child-category.scss";
+@import "assets/components/category.scss";
+//import style components
 @import "assets/components/dashboard";
 @import "assets/components/organization-page-create";
-@import "assets/components/user-organization"
+@import "assets/components/user-organization" //import bootstrap

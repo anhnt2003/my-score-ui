@@ -1,14 +1,26 @@
-import { Injectable } from '@angular/core';
-import { ExternalLoginDto } from '../types/external-login.dto';
-import { AuthResponseDto } from '../types/auth-response.dto';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
-import { BehaviorSubject, catchError, map, of, switchMap, tap } from 'rxjs';
-import { AuthContext } from '../types/auth-context';
-import { LOCAL_STORAGE_AUTH_KEY, LOCAL_STORAGE_ORGANIZATION_KEY } from '../../core/common/constants';
+import { Injectable } from '@angular/core';
+
+import {
+  BehaviorSubject,
+  catchError,
+  map,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
+
 import { SocialAuthService } from '@abacritt/angularx-social-login';
+
+import { environment } from '../../../environments/environment';
+import {
+  LOCAL_STORAGE_AUTH_KEY,
+  LOCAL_STORAGE_ORGANIZATION_KEY,
+} from '../../core/common/constants';
+import { AuthContext } from '../types/auth-context';
+import { AuthResponseDto } from '../types/auth-response.dto';
+import { ExternalLoginDto } from '../types/external-login.dto';
 import { OrganizationService } from './organization.service';
-import { OrganizationContext } from '../types/organization-context';
 
 @Injectable({
   providedIn: 'root'

@@ -1,5 +1,5 @@
-import { OrganizationUserReq } from "./organization-user.req";
+import { OrganizationUserReq } from './organization-user.req';
 
 export interface CreateOrganizationUserReq extends OrganizationUserReq {
-
+    positionTitle: string;
 }

@@ -12,9 +12,7 @@
         </ng-template>
         <ng-template pTemplate="header">
             <tr>
-                <th>Name</th>
                 <th>Email</th>
-                <th>Organization</th>
                 <th>Title</th>
                 <th>Status</th>
                 <th style="width: 5rem"></th>
@@ -22,17 +20,15 @@
         </ng-template>
         <ng-template pTemplate="body" let-data>
             <tr>
-                <td>{{ data.userName }}</td>
                 <td>{{ data.email }}</td>
-                <td>{{ data.organizationName }}</td>
                 <td>{{ data.positionTitle }}</td>
                 <td>{{ data.evaluationStatus }}</td>
-                <button 
-                    type="button" 
-                    pButton 
-                    pRipple 
-                    icon="pi pi-plus">
-                </button>
+                <td>
+                    <div class="button-action">
+                        <button type="button" pButton pRipple icon="pi pi-user-edit">
+                        </button>
+                    </div>
+                </td>
             </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
@@ -42,18 +38,8 @@
         </ng-template>
     </p-table>
     <div class="pagination">
-        <span class="mx-1 text-color">Items per page: </span>
-        <p-dropdown [options]="pagingOptions.pageSizeOptions" 
-                    optionLabel="label" 
-                    optionValue="value" 
-                    [(ngModel)]="pagingOptions.pageSize" 
-                    (ngModelChange)="0" />
-        <p-paginator [rows]="pagingOptions.pageSize" 
-                     [totalRecords]="120" 
-                     (onPageChange)="paginatorSubject.next($event)" 
-                     [showCurrentPageReport]="true"
-                     currentPageReportTemplate="{first} - {last} of {totalRecords}" 
-                     [showPageLinks]="false" 
-                     [showFirstLastIcon]="false"></p-paginator>
+        <span class="mx-1 text-color">số lượng trong trang: </span>
+        <p-dropdown [options]="pagingOptions.pageSizeOptions" optionLabel="label" optionValue="value" [(ngModel)]="pagingOptions.pageSize" (ngModelChange)="0" />
+        <p-paginator [rows]="pagingOptions.pageSize" [totalRecords]="120" (onPageChange)="paginatorSubject.next()" [showCurrentPageReport]="true" currentPageReportTemplate="{first} - {last} of {totalRecords}" [showPageLinks]="false" [showFirstLastIcon]="false"></p-paginator>
     </div>
 </div>

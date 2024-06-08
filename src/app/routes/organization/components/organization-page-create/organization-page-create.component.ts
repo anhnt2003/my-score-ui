@@ -20,6 +20,7 @@ import {
   tap,
 } from 'rxjs';
 
+import { FloatLabelModule } from 'primeng/floatlabel';
 import { BaseComponent } from '../../../../core/components/base.component';
 import {
   OrganizationService,
@@ -30,7 +31,7 @@ import { LOCAL_STORAGE_ORGANIZATION_KEY } from '../../../../core/common/constant
 @Component({
   selector: 'app-organization-page-create',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FloatLabelModule],
   templateUrl: './organization-page-create.component.html',
   styleUrl: './organization-page-create.component.scss'
 })
@@ -40,6 +41,9 @@ export class OrganizationPageCreateComponent extends BaseComponent implements On
   public formSubmitSubject = new Subject<void>();
 
   private formSubmited$ = this.formSubmitSubject.asObservable();
+
+  organization: string | undefined;
+  code: string | undefined;
 
   constructor(
     private readonly fb: FormBuilder,

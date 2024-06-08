@@ -54,9 +54,18 @@
                 <td>
                     <div class="button-action">
                         <button type="button" pButton pRipple icon="pi pi-user-edit">
-                        </button> @if(data.id != 1) {
-                        <button type="button" pButton pRipple severity="danger" icon="pi pi-times">
+                        </button>
+                        
+                        @if(data.userId != userId){
+                        <button type="button" pButton (click)="confirmDeleteUser(data.userId)" pRipple severity="danger" icon="pi pi-times">
                         </button> }
+                        <p-dialog header="Xác nhận" [(visible)]="confirmDialogVisible" [modal]="true" [closable]="false">
+                            <p>Bạn có chắc muốn xóa người dùng này không?</p>
+                            <p-footer>
+                              <button pButton type="button" label="Có" icon="pi pi-check" (click)="deleteUser()"></button>
+                              <button pButton type="button" label="Không" icon="pi pi-times" (click)="confirmDialogVisible = false"></button>
+                            </p-footer>
+                        </p-dialog>
                     </div>
                 </td>
             </tr>
@@ -70,7 +79,7 @@
     <div class="pagination">
         <span class="mx-1 text-color">số lượng trong trang: </span>
         <p-dropdown [options]="pagingOptions.pageSizeOptions" optionLabel="label" optionValue="value" [(ngModel)]="pagingOptions.pageSize" (ngModelChange)="perPageModel" />
-        <p-paginator [first]="perPageModel" [rows]="pagingOptions.pageSize" #paginator [totalRecords]="totalCountData" (onPageChange)="paginatorSubject.next()" [showCurrentPageReport]="true" currentPageReportTemplate="{first} - {last} of {totalRecords}" [showPageLinks]="false"
-            [showFirstLastIcon]="false"></p-paginator>
+        <p-paginator [first]="perPageModel" [rows]="pagingOptions.pageSize" #paginator [totalRecords]="totalCountData" (onPageChange)="paginatorSubject.next()" [showCurrentPageReport]="true" 
+        currentPageReportTemplate="{first} - {last} of {totalRecords}" [showPageLinks]="false" [showFirstLastIcon]="false"></p-paginator>
     </div>
 </div>

@@ -1,4 +1,6 @@
 export interface OrganizationUserDto {
+    data: OrganizationUserDto[];
+    
     id: number;
 
     userId: number;

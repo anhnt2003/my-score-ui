@@ -1,6 +1,7 @@
 <div class="container child-category-container">
-    <p-button (click)="showDialog()" label="Thêm kỹ năng" />
-
+    @if(categories.length == 0 || !inputViewable){
+        <p-button (click)="showDialog()" label="Thêm kỹ năng" />
+    }
     <p-dialog class="dialog-container container" header="Thêm tiêu chí" [modal]="true" [(visible)]="visible" [draggable]="false">
         <span class="p-text-secondary block mb-5">Nhập thông tin kỹ năng muốn thêm</span>
         <form [formGroup]="categoryForm">
@@ -48,8 +49,6 @@
         @if (inputViewable == false){
             <p-button class="cancel-button" (click)="cancelEditCategory()" label="Cancel" />
             <p-button (click)="postCategory()" label="Save" />
-        } @else if (inputViewable == true && categories.length > 0){
-            <p-button (click)="editCategory()" label="Edit" />
         }
     </div>
 </div>

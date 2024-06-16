@@ -47,7 +47,7 @@
 
                 <div class="button-container">
                     <p-button class="cancel-button" label="Hủy" severity="secondary" (click)="toggleFixNameVisible(item.id, false)" />
-                    <p-button label="Cập nhật" (click)="uploadParentCategory()" />
+                    <p-button label="Cập nhật" (click)="updateNameCategory(item.id, item.name)" />
                 </div>
             </p-dialog>
         </ng-template>

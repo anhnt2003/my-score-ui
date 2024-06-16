@@ -1,0 +1,31 @@
+<div class="container review-user-container">
+    <p-table [value]="organizationUser" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Tên người dùng</th>
+                <th>Thao tác</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-user>
+            <tr>
+                <td>{{user.userName}}</td>
+                <td><p-button (click)="openReviewDialog()" label="Đánh giá người dùng" /></td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+    <p-dialog class="dialog-container container" header="Thêm tiêu chí" [modal]="true" [(visible)]="reviewUserDialog" [draggable]="false">
+        <span class="p-text-secondary block mb-5">Nhập điểm người dùng</span>
+            @for (category of categoriesSkill; track category) {
+                <p-panel [header]="category.name" [toggleable]="true" [collapsed]="true">
+                    @for(categoryWithScore of categoryEnterScore$ | async; track categoryWithScore){
+                        <form [formGroup]="addScoreForm" (submit)="formSubmitSubject.next()">
+                            <p>{{categoryWithScore.name}}</p>
+                            <p-inputNumber formControlName="scoreEntered" mode="decimal" [minFractionDigits]="1"/> 
+                        </form>
+                    }
+                </p-panel>
+            }
+        <p-button type="submit" label="Xác nhận" />
+    </p-dialog>
+</div>

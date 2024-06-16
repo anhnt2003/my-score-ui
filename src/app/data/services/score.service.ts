@@ -25,4 +25,8 @@ export class ScoreService {
       params: { organizationId }
     });
   }
+
+  public addScore(score: ScoreDto[]){
+    return this.httpClient.post<ScoreDto[]>(`${environment.apiEndpoint}/score`, score)
+  }
 }

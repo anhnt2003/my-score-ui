@@ -92,7 +92,7 @@ export class UserOrganizationComponent extends BaseComponent implements OnInit, 
   }
 
   ngOnInit(): void {
-    this.loadPagedOrganizationUser(10008);
+    this.loadPagedOrganizationUser(this.organizationId);
   }
 
   ngAfterViewInit(): void {

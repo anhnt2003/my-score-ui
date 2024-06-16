@@ -70,6 +70,11 @@ export const routes: Routes = [
                 path: 'organization-page-list',
                 loadComponent: () => 
                     import('./routes/organization/components/organization-page-list/organization-page-list.component').then((c) => c.OrganizationPageListComponent)
+            },
+            {
+                path: 'review',
+                loadComponent: () => 
+                    import('./routes/review-user/components/review-user/review-user.component').then((c) => c.ReviewUserComponent)
             }
         ]
     }

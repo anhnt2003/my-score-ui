@@ -20,8 +20,16 @@ export class CategoryService {
     return this.httpClient.get<CategoryResponseDto>(`${environment.apiEndpoint}/Category?organizationId=${organizationId}${parentIdParam}`);
   }
 
+  public getListCategoryEnterScore(id: number | undefined){
+    return this.httpClient.get<CategoryResponseDto>(`${environment.apiEndpoint}/Category/enter-scored?id=${id}`);
+  }
+
   public postCategory(categoryList: CategoryDto[]){
     return this.httpClient.post<CategoryResponseDto["data"]>(`${environment.apiEndpoint}/Category`, categoryList);
+  }
+
+  public updateCategory(category: CategoryDto){
+    return this.httpClient.put<MessageRes>(`${environment.apiEndpoint}/Category`,category);
   }
 
   public deleteCategory(categoryId: number){

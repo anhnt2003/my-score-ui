@@ -1,5 +1,5 @@
 export interface ScoreDto {
-    id: number;
+    id?: number;
 
     userId: number;
 
@@ -11,11 +11,11 @@ export interface ScoreDto {
 
     categoryId: number;
 
-    parentId: number;
+    parentId?: number;
     
-    categoryName: string;
+    categoryName?: string;
 
-    createdDate: Date;
+    createdDate?: Date;
 
     modifiedDate?: Date;
 

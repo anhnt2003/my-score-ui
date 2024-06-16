@@ -60,6 +60,13 @@ export class AppNavComponent implements OnInit {
             command: () => {
               this.router.navigate(['/organization-page-list']);
             }
+          },
+          {
+            label: 'Review',
+            icon: 'fa fa-user-plus', 
+            command: () => {
+              this.router.navigate(['/review']);
+            }
           }
         ]
       }

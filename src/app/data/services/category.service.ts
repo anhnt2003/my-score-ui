@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment.development';
 import { CategoryResponseDto } from '../types/category-response.dto';
 import { CategoryDto } from '../types/category.dto';
 import { MessageRes } from '../types/message-response';
+import { CategoryToReviewResponseDto } from '../types/category-to-review-response.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,10 @@ export class CategoryService {
     let parentIdParam = parentId === null ? '' : `&parentId=${parentId}`;
 
     return this.httpClient.get<CategoryResponseDto>(`${environment.apiEndpoint}/Category?organizationId=${organizationId}${parentIdParam}`);
+  }
+
+  public getCategoryToReview(organizationId: number){
+    return this.httpClient.get<CategoryToReviewResponseDto>(`${environment.apiEndpoint}/Category/enter-scored?organizationId=${organizationId}`);
   }
 
   public getListCategoryEnterScore(id: number | undefined){

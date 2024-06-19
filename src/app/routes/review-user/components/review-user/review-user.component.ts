@@ -13,9 +13,13 @@ import { CategoryService } from '../../../../data/services/category.service';
 import { CategoryResponseDto } from '../../../../data/types/category-response.dto';
 import { PanelModule } from 'primeng/panel';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { ScoreService } from '../../../../data/services/score.service';
+import { CategoryToReviewDto } from '../../../../data/types/category-to-review.dto';
+import { CategoryToReviewResponseDto } from '../../../../data/types/category-to-review-response.dto';
+import { ScoreDto } from '../../../../data/types/score.dto';
 
 @Component({
   selector: 'app-review-user',
@@ -28,22 +32,26 @@ import { ScoreService } from '../../../../data/services/score.service';
     InputNumberModule,
     CommonModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    InputTextModule
   ],
   templateUrl: './review-user.component.html',
   styleUrl: './review-user.component.scss'
 })
 export class ReviewUserComponent extends BaseComponent implements OnInit{
   public organizationUser: OrganizationUserDto[] = [];
-  public categoriesSkill: CategoryDto[] = [];
+  public categoriesSkill: CategoryToReviewDto[] = [];
   public categoryEnterScoreSubject = new Subject<CategoryDto[]>();
   public categoryEnterScore$: Observable<CategoryDto[]> = this.categoryEnterScoreSubject.asObservable();
   public reviewUserDialog: boolean = false;
   public addScoreForm: FormGroup;
   public formSubmitSubject = new Subject<void>();
+  public userScore: ScoreDto[] = [];
 
   private organizationId!: number;
   private formSubmited$ = this.formSubmitSubject.asObservable();
+  private userIdIsReviewed!: number;
+  private addScore!: ScoreDto[];
 
   constructor(
     private organizationService: OrganizationService,
@@ -53,12 +61,8 @@ export class ReviewUserComponent extends BaseComponent implements OnInit{
   ) {
     super();
     this.addScoreForm = this.fb.group({
-      userId: [, Validators.required],
-      organizationId: [,Validators.required],
-      scoreEntered: [, Validators.required],
-      categoryId:[, Validators.required],
-      reviewBy:[, Validators.required]
-    })
+      entries: this.fb.array([])
+    });
   }
 
   ngOnInit(): void {
@@ -70,36 +74,73 @@ export class ReviewUserComponent extends BaseComponent implements OnInit{
       take: 10
     }
 
-    let categoryEnterScoreTemp: CategoryDto[] = [];
-
     this.organizationService.getPagedOrganizationUser(params).pipe(
       tap((res: PagedResult<OrganizationUserDto>) => {
         this.organizationUser = res.data;
       }),
-      switchMap(() => this.categoryService.getCategory(this.organizationId, null)),
-      tap((childCategories: CategoryResponseDto) => {
+      switchMap(() => this.categoryService.getCategoryToReview(this.organizationId)),
+      tap((childCategories: CategoryToReviewResponseDto) => {
         this.categoriesSkill = childCategories.data;
       }),
-      switchMap((childCategories: CategoryResponseDto) => 
-        forkJoin(childCategories.data.map(category => 
-          this.categoryService.getListCategoryEnterScore(category.id).pipe(
-            tap((categoryEnterScore: CategoryResponseDto) => {
-              categoryEnterScoreTemp = [...categoryEnterScoreTemp, ...categoryEnterScore.data];
-              this.categoryEnterScoreSubject.next(categoryEnterScoreTemp);
-            }),
-            catchError(err => of(err))
-          ))
-        )
-      ),
       catchError(err => of(err))
     ).subscribe();
   }
 
-  openReviewDialog(){
+  openReviewDialog(userId: number){
+    this.scoreService.getListScore({organizationId: this.organizationId, userId: userId}).pipe(
+      tap((res: ScoreDto[]) => {
+        this.userScore = res;
+        this.initializeFormEntries();
+      }),
+      catchError((err) => of(err))
+    ).subscribe();
+    this.userIdIsReviewed = userId;
     this.reviewUserDialog = true;
   }
 
+  initializeFormEntries() {
+    const entries = this.entries;
+    entries.clear();
+    this.categoriesSkill.forEach((childCategory) => {
+      childCategory.categoryChildren.forEach((categoryEnterScore, index) => {
+        entries.push(this.fb.group({
+          userId: [this.userIdIsReviewed, Validators.required],
+          organizationId: [this.organizationId, Validators.required],
+          scoreEntered: [this.userScore[index]?.scoreEntered ?? '', Validators.required],
+          categoryId: [categoryEnterScore.id, Validators.required],
+        }));
+      });
+    });
+  }
+
+  get entries(): FormArray {
+    return this.addScoreForm.get('entries') as FormArray;
+  }
+
   private submitAddCoreForm(){
-    
+    this.formSubmited$.pipe(
+      tap(() => {
+        const entries = this.addScoreForm.get('entries') as FormArray;
+        entries.controls.forEach((item) => {
+          if(item.value.scoreEntered !== '')
+            this.addScore.push(item.value)
+        })
+      }),
+      filter(() => {
+        if (this.addScore.length == 0)
+          return false;
+        return true;
+      }),
+      switchMap(() => 
+        this.scoreService.addScore(this.addScore).pipe(
+          tap((data: ScoreDto[]) => {
+            this.reviewUserDialog = false;
+            this.addScore = [];
+          }),
+          catchError((err) => of(err))
+        )
+      ),
+      catchError((err) => of(err))
+    ).subscribe();
   }
 }

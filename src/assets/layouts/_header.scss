@@ -5,31 +5,29 @@
     .main-account {
         height: 60px;
         display: flex;
-        justify-content: end;
         align-items: center;
-        margin-right: 60px;
+        margin: 0 25px;
 
         .action {
             display: flex;
             align-items: center;
+            justify-content: end;
+            width: 100%;
         }
 
         img {
             max-width: 40px;
             cursor: pointer;
             border-radius: 100%;
-            margin-right: 5px;
-        }
-
-        span {
-            font-size: 16;
-            cursor: pointer;
-            margin-right: 5px;
         }
 
         i {
             cursor: pointer;
             font-size: 20px;
+        }
+
+        .panel {
+            position: relative;
         }
     }
 }

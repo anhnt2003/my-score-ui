@@ -1,17 +1,15 @@
 <div class="container-dashboard">
-    @if(userOrganizationProfileData$ | async; as user) {
+    @if(employeeInfoData$ | async; as employeeInfo) {
     <div class="profile">
         <p-card>
             <div class="avatar">
-                <img [src]="user.profilePicture">
+                <img [src]="user.avatar">
             </div>
             <div class="infor">
                 <ul>
                     <li><i class="fa fa-envelope"></i> {{ user.email }}</li>
                     <li><i class="fa fa-user"></i> {{ user.userName }}</li>
-                    <li><i class="fa fa-users"></i> {{ user.organizationName }}</li>
-                    <li><i class="fa fa-envelope"></i>{{ user.positionTitle }}</li>
-                    <li><i class="fa fa-envelope"></i> {{ user.evaluationStatus }}</li>
+                    <li><i class="fa fa-envelope"></i>{{ employeeInfo.jobTitle }}</li>
                 </ul>
             </div>
         </p-card>

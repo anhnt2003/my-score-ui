@@ -1,9 +1,5 @@
 import { Routes } from '@angular/router';
-
 import { authGuard } from './core/guards/auth.guard';
-import {
-  organizationExsitedGuard,
-} from './core/guards/organization-exsited.guard';
 import { AppLayoutComponent } from './layouts/app-layout/app-layout.component';
 import {
   AuthLayoutComponent,
@@ -26,14 +22,11 @@ export const routes: Routes = [
         ]
     },
     {
-        path: 'organization-create',
-        canActivate: [authGuard],
-        loadComponent: () => 
-            import('./routes/organization/components/organization-page-create/organization-page-create.component').then((c) => c.OrganizationPageCreateComponent)
+        path: 'department',
+        loadComponent: () => import('./routes/department/components/department/department.component').then((c) => c.DepartmentComponent)
     },
     {
         path: '',
-        canActivate: [authGuard, organizationExsitedGuard],
         component: AppLayoutComponent,
         children: [
             {
@@ -47,14 +40,14 @@ export const routes: Routes = [
                     import('./routes/dashboard/components/dashboard/dashboard.component').then((c) => c.DashboardComponent)
             },
             {
-                path: 'score-user-detail',
+                path: 'score-employee-detail',
                 loadComponent: () => 
                     import('./routes/score/components/score-detail/score-detail.component').then((c) => c.ScoreDetailComponent)
             },
             {
-                path: 'user-organization',
+                path: 'employee',
                 loadComponent: () => 
-                    import('./routes/user/components/user-organization/user-organization.component').then((c) => c.UserOrganizationComponent)
+                    import('./routes/employee/components/employee/employee.component').then((c) => c.EmployeeComponent)
             },
   {
                 path: 'category',
@@ -66,11 +59,6 @@ export const routes: Routes = [
                 loadComponent: () => 
                     import('./routes/child-category/components/child-category/child-category.component').then((c) => c.ChildCategoryComponent)
             },
-            {
-                path: 'organization-page-list',
-                loadComponent: () => 
-                    import('./routes/organization/components/organization-page-list/organization-page-list.component').then((c) => c.OrganizationPageListComponent)
-            }
         ]
     }
 ];

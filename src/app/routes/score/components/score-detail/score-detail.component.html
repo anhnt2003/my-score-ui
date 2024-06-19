@@ -14,14 +14,12 @@
             <tr>
                 <th>Email</th>
                 <th>Title</th>
-                <th>Status</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-data>
             <tr>
                 <td>{{ data.email }}</td>
-                <td>{{ data.positionTitle }}</td>
-                <td>{{ data.evaluationStatus }}</td>
+                <td>{{ data.jobTitle }}</td>
             </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">

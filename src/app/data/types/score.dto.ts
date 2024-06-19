@@ -3,7 +3,7 @@ export interface ScoreDto {
 
     userId: number;
 
-    organizationId: number;
+    departmentId: number;
 
     scoreCalculated: number;
 

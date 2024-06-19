@@ -3,7 +3,7 @@ export interface CategoryDto {
 
     name: string;
 
-    organizationId: number;
+    departmentId: number;
 
     weighting?: number;
 

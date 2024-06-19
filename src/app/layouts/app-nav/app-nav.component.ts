@@ -37,30 +37,23 @@ export class AppNavComponent implements OnInit {
             label: 'Performance',
             icon: 'fa fa-graduation-cap',
             command: () => {
-              this.router.navigate(['/score-user-detail']);
+              this.router.navigate(['/score-employee-detail']);
             }
           },
           {
-            label: 'User',
+            label: 'Employee',
             icon: 'fa fa-user',
             command: () => {
-              this.router.navigate(['/user-organization']);
+              this.router.navigate(['/employee']);
             }
           },
-            {
-                label: 'Add Category',
-                icon: 'fa fa-star', 
-                command: () => {
-                  this.router.navigate(['/category']);
-                }
-            },
           {
-            label: 'Organization',
-            icon: 'fa fa-bars',
+            label: 'Add Category',
+            icon: 'fa fa-star',
             command: () => {
-              this.router.navigate(['/organization-page-list']);
+              this.router.navigate(['/category']);
             }
-          }
+          },
         ]
       }
     ];

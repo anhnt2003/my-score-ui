@@ -14,10 +14,10 @@ export class CategoryService {
     private httpClient: HttpClient
   ) { }
   
-  public getCategory(organizationId: number, parentId: number | null){
+  public getCategory(departmentId: number, parentId: number | null){
     let parentIdParam = parentId === null ? '' : `&parentId=${parentId}`;
 
-    return this.httpClient.get<CategoryResponseDto>(`${environment.apiEndpoint}/Category?organizationId=${organizationId}${parentIdParam}`);
+    return this.httpClient.get<CategoryResponseDto>(`${environment.apiEndpoint}/Category?departmentId=${departmentId}${parentIdParam}`);
   }
 
   public postCategory(categoryList: CategoryDto[]){

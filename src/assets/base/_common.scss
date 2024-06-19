@@ -36,3 +36,29 @@ li {
     font-weight: 500;
   }
 
+  //css prime ng
+  // margin top for float label
+.p-floatLabel-mt-1 {
+  span {
+    margin-top: 2.5rem !important;
+  }
+}
+
+//css p-overlaypanel 
+.p-overlaypanel {
+  position: absolute;
+  margin-top: 10px;
+  top: 0;
+  right: 24px !important;
+  left: auto !important;
+}
+
+.p-overlaypanel:after, .p-overlaypanel:before {
+  bottom: 100%;
+  left: calc(var(--overlayArrowLeft, 0) + 6rem) !important;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}

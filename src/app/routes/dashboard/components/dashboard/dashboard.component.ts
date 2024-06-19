@@ -15,14 +15,12 @@ import {
 
 import { BaseComponent } from '../../../../core/components/base.component';
 import { ScoreService } from '../../../../data/services/score.service';
-import { UserService } from '../../../../data/services/user.service';
-import {
-  OrganizationUserDto,
-} from '../../../../data/types/organization-user.dto';
 import { ChartData } from 'chart.js';
 import { ChartOptions } from '../../../../shared/common/constants';
-import { OrganizationService } from '../../../../data/services/organization.service';
 import { AuthService } from '../../../../data/services/auth.service';
+import { DepartmentService } from '../../../../data/services/department.service';
+import { EmployeeDto } from '../../../../data/types/employee.dto';
+import { EmployeeService } from '../../../../data/services/employee.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,13 +31,14 @@ import { AuthService } from '../../../../data/services/auth.service';
 })
 export class DashboardComponent extends BaseComponent implements OnInit {
   public chartData: ChartData | undefined;
-  public userOrganizationProfileData$ = new Observable<OrganizationUserDto>();
+  public employeeInfoData$ = new Observable<EmployeeDto>();
   public horizontalOptions = ChartOptions;
-  public userId = this.authService.getAuthState().userId ?? 0;
-  public organizationId = this.organizationService.getOrganizationState().id ?? 0;
+  public user = this.authService.getAuthState();
+  // public departmentId = this.departmentService.getDepartmentnState().id ?? 0;
 
   constructor(
-    private readonly organizationService: OrganizationService,
+    private readonly departmentService: DepartmentService,
+    private readonly employeeService: EmployeeService,
     private authService: AuthService,
     private readonly scoreService: ScoreService
   ) {
@@ -47,14 +46,14 @@ export class DashboardComponent extends BaseComponent implements OnInit {
    }
   
   ngOnInit(): void {
-    this.initProfileUser();
+    this.initEmployeeInfo();
     this.initChartData();
   }
 
   private initChartData() {
     this.scoreService.getListScore({
-      userId: this.userId,
-      organizationId: this.organizationId
+      employeeId: 0,
+      departmentId: 1
     }).pipe(
       map((dataScore) => dataScore.filter((item) => item.parentId == null)),
       tap(data => {
@@ -74,9 +73,7 @@ export class DashboardComponent extends BaseComponent implements OnInit {
     ).subscribe();
   }
 
-  private initProfileUser() {
-    this.userOrganizationProfileData$ = this.organizationService.getPagedOrganizationUser({ userId: this.userId, organizationId: this.organizationId, take: 10, skip: 0 }).pipe(
-      map((response) => response.data[0])
-    );
+  private initEmployeeInfo() {
+    this.employeeInfoData$ = this.employeeService.getEmployeeById(0);
   }
 }

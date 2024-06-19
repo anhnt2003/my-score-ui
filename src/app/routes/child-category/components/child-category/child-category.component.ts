@@ -70,7 +70,7 @@ export class ChildCategoryComponent extends BaseComponent implements OnInit{
       this.categories.push({
         name: this.categoryForm.value.categoryName,
         weighting: this.categoryForm.value.weighting,
-        organizationId: 2, // Fix cứng
+        departmentId: 2, // Fix cứng
         parentId: parseInt(this.id)
       })
       this.categoryForm.patchValue({categoryName: "", weighting: 0})

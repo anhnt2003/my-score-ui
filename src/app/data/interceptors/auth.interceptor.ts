@@ -1,16 +1,16 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../services/auth.service';
-import { OrganizationService } from '../services/organization.service';
+import { DepartmentService } from '../services/department.service';
 
 export const authInterceptor: HttpInterceptorFn = (request, next) => {
   const authState = inject(AuthService).authState.value;
-  const organizationState = inject(OrganizationService).organizationState.value;
+  const departmentState = inject(DepartmentService).departmentState.value;
   if (authState) {
     const authReq = request.clone({
       setHeaders: { 
         Authorization: `Bearer ${authState.token}`,
-        OrganizationId: `${organizationState ? organizationState.id : null}`
+        DepartmentId: `${departmentState ? departmentState.id : null}`
       }
     });
     return next(authReq);

@@ -1,52 +1,26 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { FormsModule } from '@angular/forms';
-
-import {
-  AutoCompleteCompleteEvent,
-  AutoCompleteModule,
-} from 'primeng/autocomplete';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { FloatLabelModule } from 'primeng/floatlabel';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { BaseComponent } from '../../../../core/components/base.component';
+import { TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
+import { FormsModule } from '@angular/forms';
+import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
-import {
-  PaginatorModule,
-  PaginatorState,
-} from 'primeng/paginator';
-import { TableModule } from 'primeng/table';
-import {
-  catchError,
-  debounceTime,
-  filter,
-  merge,
-  of,
-  Subject,
-  takeUntil,
-  tap,
-} from 'rxjs';
-
-import { BaseComponent } from '../../../../core/components/base.component';
-import { AuthService } from '../../../../data/services/auth.service';
-import {
-  OrganizationService,
-} from '../../../../data/services/organization.service';
-import { UserService } from '../../../../data/services/user.service';
-import {
-  OrganizationUserDto,
-} from '../../../../data/types/organization-user.dto';
-import { UserDto } from '../../../../data/types/user.dto';
+import { EmployeeDto } from '../../../../data/types/employee.dto';
 import { DefaultPagingOptions } from '../../../../shared/common/constants';
+import { UserDto } from '../../../../data/types/user.dto';
+import { Subject, catchError, debounceTime, filter, merge, of, takeUntil, tap } from 'rxjs';
+import { EmployeeService } from '../../../../data/services/employee.service';
+import { UserService } from '../../../../data/services/user.service';
+import { AuthService } from '../../../../data/services/auth.service';
+import { DepartmentService } from '../../../../data/services/department.service';
 
 @Component({
-  selector: 'app-user-organization',
+  selector: 'app-employee',
   standalone: true,
   imports: [
     TableModule, 
@@ -60,23 +34,23 @@ import { DefaultPagingOptions } from '../../../../shared/common/constants';
     FloatLabelModule,
     InputTextModule
   ],
-  templateUrl: './user-organization.component.html',
-  styleUrl: './user-organization.component.scss'
+  templateUrl: './employee.component.html',
+  styleUrl: './employee.component.scss'
 })
-export class UserOrganizationComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class EmployeeComponent extends BaseComponent implements OnInit, AfterViewInit {
 
-  public organizationUserData: OrganizationUserDto[] = [];
+  public employeeData: EmployeeDto[] = [];
   public totalCountData: number = 0;
   public pagingOptions = DefaultPagingOptions;
   public visibleAddUserDialog = false;
   public listUsersFound: UserDto[] = [];
   public selectedUserModel: UserDto | undefined;
-  public positionTitleModel: string | undefined;
+  public jobTitleModel: string | undefined;
   public perPageModel: number = 0;
   public searchTermSubject = new Subject<string>();
   public paginatorSubject = new Subject<void>();
   public userId = this.authService.getAuthState().userId ?? 0;
-  public organizationId = this.organizationService.getOrganizationState().id ?? 0;
+  public departmentId = this.departmentService.getDepartmentnState().id ?? 0;
 
   private paginatorChanged$ = this.paginatorSubject.asObservable();
   private searchTermChanged$ = this.searchTermSubject.asObservable();
@@ -84,7 +58,8 @@ export class UserOrganizationComponent extends BaseComponent implements OnInit, 
   @ViewChild('searchTerm') searchTermEl: ElementRef | undefined;
   @ViewChild('paginator') paginator: PaginatorState | undefined;
   constructor(
-    private readonly organizationService: OrganizationService,
+    private readonly employeeService: EmployeeService,
+    private readonly departmentService: DepartmentService,
     private readonly userService: UserService,
     public authService: AuthService
   ) {
@@ -92,15 +67,15 @@ export class UserOrganizationComponent extends BaseComponent implements OnInit, 
   }
 
   ngOnInit(): void {
-    this.loadPagedOrganizationUser(10008);
+    this.loadPagedEmployee(this.departmentId);
   }
 
   ngAfterViewInit(): void {
     merge(this.searchTermChanged$, this.paginatorChanged$).pipe(
       takeUntil(this.destroyed$)
     ).subscribe(() => {
-      this.loadPagedOrganizationUser(
-        this.organizationId, 
+      this.loadPagedEmployee(
+        this.departmentId, 
         this.paginator?.page, 
         this.paginator?.pageCount, 
         this.searchTermEl?.nativeElement.value ?? null);
@@ -121,21 +96,21 @@ export class UserOrganizationComponent extends BaseComponent implements OnInit, 
   }
 
   public handleAddUser() {
-    this.organizationService.CreateOrganizationUser({
-      organizationId: this.organizationId,
+    this.employeeService.CreateEmployee({
+      departmentId: this.departmentId,
       userId: this.selectedUserModel?.id ?? 0,
-      positionTitle: this.positionTitleModel ?? ''
+      jobTitle: this.jobTitleModel ?? ''
     }).pipe(
       takeUntil(this.destroyed$)
-    ).subscribe((result) => {
-      this.loadPagedOrganizationUser(this.organizationId, this.paginator?.page, this.paginator?.pageCount, this.searchTermEl?.nativeElement.value);
+    ).subscribe(() => {
+      this.loadPagedEmployee(this.departmentId, this.paginator?.page, this.paginator?.pageCount, this.searchTermEl?.nativeElement.value);
       this.visibleAddUserDialog = false;
     })
   }
 
-  private loadPagedOrganizationUser(organizationId: number, pageIndex = 0, pageSize = DefaultPagingOptions.pageSize , searchTerm?: string) {
-    this.organizationService.getPagedOrganizationUser({ 
-      organizationId: organizationId, 
+  private loadPagedEmployee(departmentId: number, pageIndex = 0, pageSize = DefaultPagingOptions.pageSize , searchTerm?: string) {
+    this.employeeService.getPagedEmployee({ 
+      departmentId: departmentId, 
       take: pageSize, 
       skip: pageSize * pageIndex, 
       searchTerm: searchTerm ?? ''
@@ -143,9 +118,9 @@ export class UserOrganizationComponent extends BaseComponent implements OnInit, 
       takeUntil(this.destroyed$)
     )
     .subscribe(reponse => {
-      this.organizationUserData = reponse.data;
+      this.employeeData = reponse.data;
       this.totalCountData = reponse.total;
-      console.log('fetch data organization user successful');
+      console.log('fetch data employees successful');
     });
   }
 }

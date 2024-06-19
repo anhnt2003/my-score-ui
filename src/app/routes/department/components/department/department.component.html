@@ -1,0 +1,7 @@
+<div class="container-department">
+    <app-department-create-form [visibleDialog]="dialogVisibleValue"
+        (dialogVisibleChange)="dialogVisibleValue = false"></app-department-create-form>
+    <p-card (click)="handleOpenDialog()">
+        <i class="fa fa-plus"></i>
+    </p-card>
+</div>

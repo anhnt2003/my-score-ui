@@ -1,38 +1,39 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 
 import {
-  AutoCompleteCompleteEvent,
   AutoCompleteModule,
 } from 'primeng/autocomplete';
 import { ButtonModule } from 'primeng/button';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
-
 import { BaseComponent } from '../../core/components/base.component';
 import { AuthService } from '../../data/services/auth.service';
-import { OrganizationDto } from '../../data/types/organization.dto';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
   selector: 'app-app-header',
   standalone: true,
-  imports: [OverlayPanelModule, ButtonModule, AutoCompleteModule, FormsModule],
+  imports: [ButtonModule, AutoCompleteModule, OverlayPanelModule, DropdownModule],
   templateUrl: './app-header.component.html',
   styleUrl: './app-header.component.scss'
 })
-export class AppHeaderComponent extends BaseComponent {
+export class AppHeaderComponent extends BaseComponent implements OnInit {
 
-  public selectedOrganization: OrganizationDto[] = [];
-  public filteredOrganization: OrganizationDto[] = [];
+  public sidebarVisible = false;
+  public selectedDepartment = new FormControl();
   constructor(
-    public authService: AuthService
+    public authService: AuthService,
   ) {
     super();
   }
 
-  public organizationFilter(event: AutoCompleteCompleteEvent) {}
+  ngOnInit(): void {
+   
+  }
 
   public logOut() {
     this.authService.logOut();
     location.reload();
   }
+
 }

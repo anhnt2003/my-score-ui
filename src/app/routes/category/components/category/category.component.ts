@@ -71,7 +71,7 @@ export class CategoryComponent extends BaseComponent implements OnInit{
     .filter(item => item !== '')
     .map(item => ({
       name: item,
-      organizationId: 2 // Fix cứng
+      departmentId: 2 // Fix cứng
     }));
 
     this.categoryService.postCategory(categoryReq).pipe(

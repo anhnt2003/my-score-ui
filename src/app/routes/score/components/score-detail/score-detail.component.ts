@@ -21,10 +21,10 @@ import {
 
 import { BaseComponent } from '../../../../core/components/base.component';
 import { ScoreService } from '../../../../data/services/score.service';
-import { ScoreUserDto } from '../../../../data/types/score-user.dto';
 import { DefaultPagingOptions } from '../../../../shared/common/constants';
-import { OrganizationService } from '../../../../data/services/organization.service';
 import { AuthService } from '../../../../data/services/auth.service';
+import { DepartmentService } from '../../../../data/services/department.service';
+import { ScoreDto } from '../../../../data/types/score.dto';
 
 @Component({
   selector: 'app-score-detail',
@@ -35,13 +35,13 @@ import { AuthService } from '../../../../data/services/auth.service';
 })
 export class ScoreDetailComponent extends BaseComponent implements OnInit, AfterViewInit {
 
-  public scoreDetailData: ScoreUserDto[] = [];
+  public scoreDetailData: ScoreDto[] = [];
   public pagingOptions = DefaultPagingOptions;
   public totalCountData: number = 0;
   public searchTermSubject = new Subject<string>();
   public paginatorSubject = new Subject<void>();
   public userId = this.authService.getAuthState().userId ?? 0;
-  public organizationId = this.organizationService.getOrganizationState().id ?? 0;
+  public departmentId = this.departmentService.getDepartmentnState().id ?? 0;
 
   private paginatorChanged$ = this.paginatorSubject.asObservable();
   private searchTermChanged$ = this.searchTermSubject.asObservable();
@@ -51,31 +51,37 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
 
   constructor(
     private readonly scoreService: ScoreService,
-    private readonly organizationService: OrganizationService,
+    private readonly departmentService: DepartmentService,
     private authService: AuthService,
   ) {
     super();
   }
 
   ngOnInit(): void {
-    this.loadPagedScoreUser(this.organizationId);
+    this.loadPagedScoreEmployee(this.departmentId, 1);
   }
 
   ngAfterViewInit(): void {
     merge(this.searchTermChanged$, this.paginatorChanged$).pipe(
       takeUntil(this.destroyed$)
     ).subscribe(() => {
-      this.loadPagedScoreUser(1)
+      this.loadPagedScoreEmployee(this.departmentId, 1);
     });
   }
 
-  private loadPagedScoreUser(organizationId: number) {
-    this.scoreService.getPagedScore(organizationId).pipe(
+  private loadPagedScoreEmployee(departmentId: number, employeeId: number, pageIndex = 0, pageSize = DefaultPagingOptions.pageSize , searchTerm?: string) {
+    this.scoreService.getPagedScore({
+      employeeId: employeeId,
+      departmentId: departmentId,
+      take: pageSize,
+      skip: pageIndex * pageSize,
+      searchTerm: searchTerm
+    }).pipe(
       takeUntil(this.destroyed$)
     ).subscribe((response) => {
       this.scoreDetailData = response.data;
       this.totalCountData = response.total;
-      console.log('fetch data score user successful');
+      console.log('fetch data score employees successful');
     });
   }
 }

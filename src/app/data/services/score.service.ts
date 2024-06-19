@@ -2,10 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { environment } from '../../../environments/environment';
-import { GetListScoreReq } from '../types/get-list-score.req';
 import { ScoreDto } from '../types/score.dto';
 import { PagedResult } from '../types/paged-result';
-import { ScoreUserDto } from '../types/score-user.dto';
+import { GetListScoreReq } from '../types/get-list-score-req';
+import { GetPagedScoreReq } from '../types/get-paged-score-req';
 
 @Injectable({
   providedIn: 'root'
@@ -20,9 +20,9 @@ export class ScoreService {
     });
   }
 
-  public getPagedScore(organizationId: number) {
-    return this.httpClient.get<PagedResult<ScoreUserDto>>(`${environment.apiEndpoint}/score/get-paged-score`, {
-      params: { organizationId }
+  public getPagedScore(params: GetPagedScoreReq) {
+    return this.httpClient.get<PagedResult<ScoreDto>>(`${environment.apiEndpoint}/score/get-paged-score`, {
+      params: { ...params }
     });
   }
 }

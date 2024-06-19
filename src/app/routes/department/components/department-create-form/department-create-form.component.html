@@ -1,0 +1,19 @@
+<p-dialog header="Tạo phòng ban" [modal]="true" (onHide)="handlerCloseDialog()" [(visible)]="visibleDialog">
+    <form [formGroup]="registerForm" class="registerForm" (ngSubmit)="formSubmitSubject.next()">
+        <p-floatLabel>
+            <input type="text" pInputText formControlName="name" />
+            <label for="departmentName">Tên Phòng ban</label>
+        </p-floatLabel>
+        <p-floatLabel class="p-floatLabel-mt-1">
+            <input type="text" pInputText formControlName="code" />
+            <label for="departmentCode">Mã Phòng ban</label>
+        </p-floatLabel>
+        <p-floatLabel class="p-floatLabel-mt-1">
+            <input type="text" pInputText formControlName="jobTitle" />
+            <label for="departmentJobTitle">Chức danh</label>
+        </p-floatLabel>
+        <div class="button-footer">
+            <p-button type="submit" label="Xác nhận"/>
+        </div>
+    </form>
+</p-dialog>

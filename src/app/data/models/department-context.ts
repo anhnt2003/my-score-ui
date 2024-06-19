@@ -1,4 +1,4 @@
-export class OrganizationContext {
+export class DepartmentContext {
     public id: number | undefined;
 
     public code: string | undefined;

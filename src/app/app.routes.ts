@@ -4,6 +4,7 @@ import { AppLayoutComponent } from './layouts/app-layout/app-layout.component';
 import {
   AuthLayoutComponent,
 } from './routes/auth/components/auth-layout/auth-layout.component';
+import { departmentContextGuard } from './core/guards/department-context.guard';
 
 export const routes: Routes = [
     {
@@ -23,11 +24,13 @@ export const routes: Routes = [
     },
     {
         path: 'department',
+        canActivate: [authGuard],
         loadComponent: () => import('./routes/department/components/department/department.component').then((c) => c.DepartmentComponent)
     },
     {
         path: '',
         component: AppLayoutComponent,
+        canActivate: [authGuard, departmentContextGuard],
         children: [
             {
                 path: '',

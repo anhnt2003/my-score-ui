@@ -1,6 +1,8 @@
 <div class="container-header">
     <div class="main-account">
-        <p-dropdown formControlName="selectedDepartment" optionLabel="name"/>
+        @if(selectDepartmentData$ | async; as departments) {
+            <p-dropdown [options]="departments" formControlName="selectedDepartment" optionLabel="name"/>
+        }
         <div class="action" (click)="op.toggle($event)">
             <img [src]="authService.authState.value?.avatar">
             <div class="panel">

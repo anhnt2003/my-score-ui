@@ -59,6 +59,6 @@ export class AuthService {
   public logOut() {
     this.externalAuthService.signOut();
     localStorage.removeItem(LOCAL_STORAGE_AUTH_KEY);
-    localStorage.removeItem(LOCAL_STORAGE_DEPARTMENT_KEY);
+    sessionStorage.removeItem(LOCAL_STORAGE_DEPARTMENT_KEY);
   }
 }

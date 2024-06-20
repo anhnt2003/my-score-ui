@@ -3,19 +3,30 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    z-index: 1;
+    padding: 0 20rem 8rem;
 
     .p-card {
         width: 289px !important;
         height: 200px !important;
+        margin-left: 2rem;
     }
 
-    .p-card-content {
-        text-align: center;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    .create-cp-card {
+
+        .p-card-content {
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .text {
+            white-space: pre-line;
+        }
     }
 
     .p-card-body {
@@ -30,8 +41,8 @@
 
     .p-dialog {
         width: 500px;
-        height: 370px;
-    
+        height: 300px;
+
         .registerForm {
             width: 100%;
         }
@@ -44,4 +55,27 @@
             width: 100%;
         }
     }
+}
+
+.background-container {
+    position: relative;
+    overflow: hidden;
+
+    .title {
+        position: absolute;
+        margin: 0;
+        padding-left: 2rem;
+        font-family: fantasy;
+        font-size: 22px;
+    }
+}
+
+.background-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 38%;
+    background-color: #8cd76d;
 }

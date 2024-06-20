@@ -6,7 +6,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { IconFieldModule } from 'primeng/iconfield';
 import { BaseComponent } from '../../../../core/components/base.component';
 import { InputTextModule } from 'primeng/inputtext';
-import { Subject, catchError, filter, of, switchMap, takeUntil } from 'rxjs';
+import { Subject, catchError, filter, finalize, of, switchMap, takeUntil } from 'rxjs';
 import { DepartmentService } from '../../../../data/services/department.service';
 import { LOCAL_STORAGE_DEPARTMENT_KEY } from '../../../../core/common/constants';
 
@@ -44,7 +44,6 @@ export class DepartmentCreateFormComponent extends BaseComponent implements OnIn
     this.registerForm = this.fb.group({
       name: [, Validators.required],
       code: [, Validators.required],
-      jobTitle: [, Validators.required]
     });
   }
 
@@ -53,24 +52,13 @@ export class DepartmentCreateFormComponent extends BaseComponent implements OnIn
       filter(() => this.registerForm.valid),
       switchMap(() => this.departmentService.createDepartment({
         name: this.registerForm.value.name,
-        code: this.registerForm.value.code,
-        jobTitle: this.registerForm.value.jobTitle
+        code: this.registerForm.value.code
       }).pipe(
-        catchError(() => {
-          this.handlerCloseDialog();
-          return of(null);
-        }),
+        catchError(() => of(null)),
       )),
+      finalize(() => this.handlerCloseDialog()),
       takeUntil(this.destroyed$)
-    ).subscribe((response) => {
-      if(response) {
-        localStorage[LOCAL_STORAGE_DEPARTMENT_KEY] = JSON.stringify(response);
-        setTimeout(() => {
-          location.reload();
-        }, 1500);
-      }
-      this.handlerCloseDialog();
-    });
+    ).subscribe();
   }
 
   public handlerCloseDialog() {

@@ -121,6 +121,7 @@ export class ReviewUserComponent extends BaseComponent implements OnInit{
     this.formSubmited$.pipe(
       tap(() => {
         const entries = this.addScoreForm.get('entries') as FormArray;
+        this.addScore = [];
         entries.controls.forEach((item) => {
           if(item.value.scoreEntered !== '')
             this.addScore.push(item.value)
@@ -140,7 +141,10 @@ export class ReviewUserComponent extends BaseComponent implements OnInit{
           catchError((err) => of(err))
         )
       ),
-      catchError((err) => of(err))
+      catchError((err) => {
+        console.log(err);
+        return of(err)
+      })
     ).subscribe();
   }
 }

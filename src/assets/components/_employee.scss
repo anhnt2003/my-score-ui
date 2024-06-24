@@ -31,7 +31,7 @@ app-score-detail {
         margin-right: 50px;
     }
     .p-dialog {
-        width: 590px;
+        width: 470px;
         height: 300px;
     }
 }
@@ -50,6 +50,16 @@ app-score-detail {
 .p-autocomplete {
     display: block !important;
     margin-top: 15px;
+
+    input {
+        width: 100%;
+    }
+}
+
+.p-float-label {
+    input {
+        width: 100%;
+    }
 }
 
 .p-dialog .p-dialog-header .p-dialog-title {
@@ -84,5 +94,16 @@ app-score-detail {
     align-items: center;
     button {
         margin-left: 10px;
+    }
+}
+
+.info {
+    display: flex;
+    align-items: center;
+    img {
+        max-width: 38px;
+        cursor: pointer;
+        border-radius: 100%;
+        margin-right: 8px;
     }
 }

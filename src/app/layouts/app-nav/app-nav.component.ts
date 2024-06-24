@@ -27,21 +27,21 @@ export class AppNavComponent implements OnInit {
         label: 'MyScore',
         items: [
           {
-            label: 'Over View',
+            label: 'Trang chủ',
             icon: 'fa fa-home',
             command: () => {
               this.router.navigate(['/dashboard']);
             }
           },
           {
-            label: 'Performance',
+            label: 'Điểm nhân viên',
             icon: 'fa fa-graduation-cap',
             command: () => {
               this.router.navigate(['/score-employee-detail']);
             }
           },
           {
-            label: 'Employee',
+            label: 'Nhân viên',
             icon: 'fa fa-user',
             command: () => {
               this.router.navigate(['/employee']);

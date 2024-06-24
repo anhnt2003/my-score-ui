@@ -3,6 +3,10 @@ export interface ScoreDto {
 
     userId: number;
 
+    email: string;
+
+    avatar: string;
+
     departmentId: number;
 
     scoreCalculated: number;

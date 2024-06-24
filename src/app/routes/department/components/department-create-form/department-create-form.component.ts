@@ -9,6 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Subject, catchError, filter, finalize, of, switchMap, takeUntil } from 'rxjs';
 import { DepartmentService } from '../../../../data/services/department.service';
 import { LOCAL_STORAGE_DEPARTMENT_KEY } from '../../../../core/common/constants';
+import { DepartmentDto } from '../../../../data/types/department.dto';
 
 @Component({
   selector: 'app-department-create-form',
@@ -26,7 +27,7 @@ import { LOCAL_STORAGE_DEPARTMENT_KEY } from '../../../../core/common/constants'
   styleUrl: './department-create-form.component.scss'
 })
 export class DepartmentCreateFormComponent extends BaseComponent implements OnInit, AfterViewInit {
-  @Output() dialogVisibleChange = new EventEmitter<void>();
+  @Output() dialogVisibleChange = new EventEmitter<DepartmentDto>();
   @Input() visibleDialog: boolean = false;
   public registerForm: FormGroup = new FormGroup({});
   public formSubmitSubject = new Subject<void>();
@@ -54,14 +55,15 @@ export class DepartmentCreateFormComponent extends BaseComponent implements OnIn
         name: this.registerForm.value.name,
         code: this.registerForm.value.code
       }).pipe(
-        catchError(() => of(null)),
+        catchError(() => {
+          return of(null);
+        }),
       )),
-      finalize(() => this.handlerCloseDialog()),
       takeUntil(this.destroyed$)
-    ).subscribe();
-  }
-
-  public handlerCloseDialog() {
-    this.dialogVisibleChange.emit();
+    ).subscribe((result) => {
+      if(result) {
+        this.dialogVisibleChange.emit(result);
+      }
+    });
   }
 }

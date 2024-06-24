@@ -18,6 +18,9 @@ import { EmployeeService } from '../../../../data/services/employee.service';
 import { UserService } from '../../../../data/services/user.service';
 import { AuthService } from '../../../../data/services/auth.service';
 import { DepartmentService } from '../../../../data/services/department.service';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-employee',
@@ -32,7 +35,13 @@ import { DepartmentService } from '../../../../data/services/department.service'
     FormsModule, 
     PaginatorModule,
     FloatLabelModule,
-    InputTextModule
+    InputTextModule,
+    ConfirmDialogModule,
+    ToastModule
+  ],
+  providers: [
+    MessageService,
+    ConfirmationService
   ],
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.scss'
@@ -43,6 +52,7 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
   public totalCountData: number = 0;
   public pagingOptions = DefaultPagingOptions;
   public visibleAddUserDialog = false;
+  public confirmDialogVisible = false;
   public listUsersFound: UserDto[] = [];
   public selectedUserModel: UserDto | undefined;
   public jobTitleModel: string | undefined;
@@ -61,6 +71,8 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
     private readonly employeeService: EmployeeService,
     private readonly departmentService: DepartmentService,
     private readonly userService: UserService,
+    private confirmationService: ConfirmationService, 
+    private messageService: MessageService,
     public authService: AuthService
   ) {
     super();
@@ -78,7 +90,8 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
         this.departmentId, 
         this.paginator?.page, 
         this.paginator?.pageCount, 
-        this.searchTermEl?.nativeElement.value ?? null);
+        this.searchTermEl?.nativeElement.value ?? null
+      );
     });
   }
 
@@ -91,8 +104,31 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
     ).subscribe((result) => this.listUsersFound = result);
   }
 
+  public openDeleteConfirmDialog() {
+    this.confirmDialogVisible = true;
+  }
+
   public openAddUserDialog() {
     this.visibleAddUserDialog = true;
+  }
+
+  public handleDeleteEmployee(employeeId = 0) {
+    this.employeeService.DeleteEmployee(employeeId).pipe(
+      takeUntil(this.destroyed$),
+      catchError((error) => {
+        return of(error);
+      })
+    ).subscribe((result) => {
+      if (result) {
+        this.loadPagedEmployee(
+          this.departmentId, 
+          this.paginator?.page, 
+          this.paginator?.pageCount, 
+          this.searchTermEl?.nativeElement.value
+        );
+      }
+      this.confirmDialogVisible = false;
+    });
   }
 
   public handleAddUser() {
@@ -103,7 +139,12 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
     }).pipe(
       takeUntil(this.destroyed$)
     ).subscribe(() => {
-      this.loadPagedEmployee(this.departmentId, this.paginator?.page, this.paginator?.pageCount, this.searchTermEl?.nativeElement.value);
+      this.loadPagedEmployee(
+        this.departmentId, 
+        this.paginator?.page, 
+        this.paginator?.pageCount, 
+        this.searchTermEl?.nativeElement.value
+      );
       this.visibleAddUserDialog = false;
     })
   }

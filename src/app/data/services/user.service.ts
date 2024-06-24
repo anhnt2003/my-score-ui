@@ -10,7 +10,7 @@ export class UserService {
   constructor(private readonly httpClient: HttpClient) { }
 
   public getListUser(searchTerm: string) {
-    return this.httpClient.get<UserDto[]>(`${environment.apiEndpoint}/user/get-list`, {
+    return this.httpClient.get<UserDto[]>(`${environment.apiEndpoint}/user`, {
       params: { searchTerm }
     })
   }

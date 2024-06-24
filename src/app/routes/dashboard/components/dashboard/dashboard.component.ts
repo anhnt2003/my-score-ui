@@ -33,7 +33,7 @@ export class DashboardComponent extends BaseComponent implements OnInit {
   public chartData: ChartData | undefined;
   public employeeInfoData$ = new Observable<EmployeeDto>();
   public horizontalOptions = ChartOptions;
-  public user = this.authService.getAuthState();
+  public user = this.authService.getAuthState() ?? 0;
   // public departmentId = this.departmentService.getDepartmentnState().id ?? 0;
 
   constructor(
@@ -74,6 +74,6 @@ export class DashboardComponent extends BaseComponent implements OnInit {
   }
 
   private initEmployeeInfo() {
-    this.employeeInfoData$ = this.employeeService.getEmployeeById(0);
+    this.employeeInfoData$ = this.employeeService.getEmployeeById(this.user.userId ?? 0);
   }
 }

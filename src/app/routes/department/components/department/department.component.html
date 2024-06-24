@@ -5,7 +5,7 @@
     <div class="container-department">
         <div class="create-cp-card">
             <app-department-create-form [visibleDialog]="dialogVisibleValue"
-                (dialogVisibleChange)="dialogVisibleValue = false"></app-department-create-form>
+                (dialogVisibleChange)="handleCloseDialog($event)"></app-department-create-form>
             <p-card (click)="handleOpenDialog()">
                 <i class="fa fa-plus"></i>
                 <h3 class="text">Tạo phòng ban</h3>
@@ -15,9 +15,7 @@
             @for (department of listDepartments; track department.id) {
                 <p-card (click)="navigateToDepartment(department)" header="{{ department.name }}">
                 </p-card>
-              } @empty {
-                Empty Data
-              }
+            }
         }
     </div>
 </div>

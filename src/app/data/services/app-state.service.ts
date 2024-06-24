@@ -7,7 +7,7 @@ import { AuthService } from './auth.service';
 export class AppStateService {
 
   constructor(
-    private athService: AuthService,
+    private authService: AuthService,
   ) { }
 
   private initAppState() {}

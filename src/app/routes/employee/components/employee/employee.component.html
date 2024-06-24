@@ -38,27 +38,32 @@
         </ng-template>
         <ng-template pTemplate="header">
             <tr>
-                <th>Name</th>
                 <th>Email</th>
-                <th>Department</th>
                 <th>JobTitle</th>
                 <th></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-data>
             <tr>
-                <td>{{ data.userName }}</td>
-                <td>{{ data.email }}</td>
+                <td class="info">
+                    <img [src]="data.avatar"/>
+                    {{ data.email }}</td>
                 <td>{{ data.jobTitle }}</td>
                 <td>
                     <div class="button-action">
                         <button type="button" pButton pRipple icon="pi pi-user-edit">
-                        </button> @if(data.userId != userId) {
-                        <button type="button" pButton pRipple severity="danger" icon="pi pi-times">
-                        </button> }
+                        </button>
+                        <button type="button" pButton pRipple severity="danger" icon="pi pi-times" (click)="openDeleteConfirmDialog()">
+                        </button>
+                        <div class="card flex justify-content-center gap-2">
+                            <p-toast />
+                            <p-confirmDialog />
+                            <p-button label="Save" [outlined]="true" />
+                            <p-button label="Delete" severity="danger" [outlined]="true" />
+                        </div>
                     </div>
                 </td>
-            </tr>
+            </tr> 
         </ng-template>
         <ng-template pTemplate="emptymessage">
             <tr>

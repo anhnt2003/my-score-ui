@@ -1,4 +1,4 @@
-<p-dialog header="Tạo phòng ban" [modal]="true" (onHide)="handlerCloseDialog()" [(visible)]="visibleDialog">
+<p-dialog header="Tạo phòng ban" [modal]="true" (onHide)="this.dialogVisibleChange.emit()" [(visible)]="visibleDialog">
     <form [formGroup]="registerForm" class="registerForm" (ngSubmit)="formSubmitSubject.next()">
         <p-floatLabel>
             <input type="text" pInputText formControlName="name" />

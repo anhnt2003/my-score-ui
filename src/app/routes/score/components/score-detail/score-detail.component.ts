@@ -58,7 +58,7 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
   }
 
   ngOnInit(): void {
-    this.loadPagedScoreEmployee(this.departmentId, 1);
+    this.loadPagedScoreEmployee(this.departmentId, undefined);
   }
 
   ngAfterViewInit(): void {
@@ -69,7 +69,7 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
     });
   }
 
-  private loadPagedScoreEmployee(departmentId: number, employeeId: number, pageIndex = 0, pageSize = DefaultPagingOptions.pageSize , searchTerm?: string) {
+  private loadPagedScoreEmployee(departmentId: number, employeeId?: number, pageIndex = 0, pageSize = DefaultPagingOptions.pageSize , searchTerm?: string) {
     this.scoreService.getPagedScore({
       employeeId: employeeId,
       departmentId: departmentId,

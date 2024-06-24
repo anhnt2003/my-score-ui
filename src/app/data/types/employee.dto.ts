@@ -3,6 +3,10 @@ export interface EmployeeDto {
 
     userId: number;
 
+    email: string;
+
+    avatar: string;
+
     departmentId: number;
 
     jobTitle: string;

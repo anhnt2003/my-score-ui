@@ -36,7 +36,7 @@ export class DepartmentService {
   }
 
   public createDepartment(params: CreateDepartmentReq) {
-    return this.httpClient.post(`${environment.apiEndpoint}/department`, params);
+    return this.httpClient.post<DepartmentDto>(`${environment.apiEndpoint}/department`, params);
   }
 
   public getListDepartment(userId: number) {

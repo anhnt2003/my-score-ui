@@ -21,6 +21,9 @@ app-score-detail {
     p-table {
         min-width: 75rem;
     }
+    td {
+        min-height: 70px;
+    }
 }
 
 .header-action {
@@ -50,7 +53,6 @@ app-score-detail {
 .p-autocomplete {
     display: block !important;
     margin-top: 15px;
-
     input {
         width: 100%;
     }
@@ -90,8 +92,9 @@ app-score-detail {
 
 .button-action {
     display: flex;
-    width: 100px;
     align-items: center;
+    justify-content: center;
+    width: 100%;
     button {
         margin-left: 10px;
     }

@@ -20,11 +20,13 @@ import {
 } from 'rxjs';
 
 import { BaseComponent } from '../../../../core/components/base.component';
-import { ScoreService } from '../../../../data/services/score.service';
-import { DefaultPagingOptions } from '../../../../shared/common/constants';
 import { AuthService } from '../../../../data/services/auth.service';
-import { DepartmentService } from '../../../../data/services/department.service';
+import {
+  DepartmentService,
+} from '../../../../data/services/department.service';
+import { ScoreService } from '../../../../data/services/score.service';
 import { ScoreDto } from '../../../../data/types/score.dto';
+import { DefaultPagingOptions } from '../../../../shared/common/constants';
 
 @Component({
   selector: 'app-score-detail',
@@ -69,9 +71,8 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
     });
   }
 
-  private loadPagedScoreEmployee(departmentId: number, employeeId?: number, pageIndex = 0, pageSize = DefaultPagingOptions.pageSize , searchTerm?: string) {
+  private loadPagedScoreEmployee(departmentId: number, pageIndex = 0, pageSize = DefaultPagingOptions.pageSize , searchTerm?: string) {
     this.scoreService.getPagedScore({
-      employeeId: employeeId,
       departmentId: departmentId,
       take: pageSize,
       skip: pageIndex * pageSize,

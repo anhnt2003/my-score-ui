@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { MessageService } from 'primeng/api';
 
 @Injectable({
@@ -7,11 +8,11 @@ import { MessageService } from 'primeng/api';
 export class ToastService {
 
   constructor(
-    private readonly messageService : MessageService
+    private messageService : MessageService
   ) { }
 
   success(content : string){
-    this.messageService.add({ severity: 'success', summary: 'Thành công', detail: content});
+    this.messageService.add({ severity: 'success', summary: 'Thành công', detail: content, life: 3000});
   }
 
   fail(content : string){

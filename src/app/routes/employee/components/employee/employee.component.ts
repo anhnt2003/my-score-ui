@@ -1,26 +1,55 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { BaseComponent } from '../../../../core/components/base.component';
-import { TableModule } from 'primeng/table';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+import {
+  ConfirmationService,
+  MessageService,
+} from 'primeng/api';
+import {
+  AutoCompleteCompleteEvent,
+  AutoCompleteModule,
+} from 'primeng/autocomplete';
+import { ButtonModule } from 'primeng/button';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DialogModule } from 'primeng/dialog';
+import { FloatLabelModule } from 'primeng/floatlabel';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
-import { FormsModule } from '@angular/forms';
-import { PaginatorModule, PaginatorState } from 'primeng/paginator';
-import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
-import { EmployeeDto } from '../../../../data/types/employee.dto';
-import { DefaultPagingOptions } from '../../../../shared/common/constants';
-import { UserDto } from '../../../../data/types/user.dto';
-import { Subject, catchError, debounceTime, filter, merge, of, takeUntil, tap } from 'rxjs';
-import { EmployeeService } from '../../../../data/services/employee.service';
-import { UserService } from '../../../../data/services/user.service';
-import { AuthService } from '../../../../data/services/auth.service';
-import { DepartmentService } from '../../../../data/services/department.service';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import {
+  PaginatorModule,
+  PaginatorState,
+} from 'primeng/paginator';
+import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import {
+  catchError,
+  debounceTime,
+  filter,
+  merge,
+  of,
+  Subject,
+  takeUntil,
+  tap,
+} from 'rxjs';
+
+import { BaseComponent } from '../../../../core/components/base.component';
+import { AuthService } from '../../../../data/services/auth.service';
+import {
+  DepartmentService,
+} from '../../../../data/services/department.service';
+import { EmployeeService } from '../../../../data/services/employee.service';
+import { ToastService } from '../../../../data/services/toast.service';
+import { UserService } from '../../../../data/services/user.service';
+import { EmployeeDto } from '../../../../data/types/employee.dto';
+import { UserDto } from '../../../../data/types/user.dto';
+import { DefaultPagingOptions } from '../../../../shared/common/constants';
 
 @Component({
   selector: 'app-employee',
@@ -40,8 +69,9 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     ToastModule
   ],
   providers: [
+    ConfirmationService,
     MessageService,
-    ConfirmationService
+    ToastService
   ],
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.scss'
@@ -52,7 +82,6 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
   public totalCountData: number = 0;
   public pagingOptions = DefaultPagingOptions;
   public visibleAddUserDialog = false;
-  public confirmDialogVisible = false;
   public listUsersFound: UserDto[] = [];
   public selectedUserModel: UserDto | undefined;
   public jobTitleModel: string | undefined;
@@ -71,7 +100,8 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
     private readonly employeeService: EmployeeService,
     private readonly departmentService: DepartmentService,
     private readonly userService: UserService,
-    private confirmationService: ConfirmationService, 
+    private readonly toastService: ToastService,
+    private confirmationService: ConfirmationService,
     private messageService: MessageService,
     public authService: AuthService
   ) {
@@ -104,30 +134,41 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
     ).subscribe((result) => this.listUsersFound = result);
   }
 
-  public openDeleteConfirmDialog() {
-    this.confirmDialogVisible = true;
-  }
-
   public openAddUserDialog() {
     this.visibleAddUserDialog = true;
   }
 
-  public handleDeleteEmployee(employeeId = 0) {
-    this.employeeService.DeleteEmployee(employeeId).pipe(
-      takeUntil(this.destroyed$),
-      catchError((error) => {
-        return of(error);
-      })
-    ).subscribe((result) => {
-      if (result) {
-        this.loadPagedEmployee(
-          this.departmentId, 
-          this.paginator?.page, 
-          this.paginator?.pageCount, 
-          this.searchTermEl?.nativeElement.value
-        );
-      }
-      this.confirmDialogVisible = false;
+  public handleDeleteEmployee(event: Event, employee: EmployeeDto) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: `Bạn có muốn xoá nhân viên ${employee.email} không`,
+      header: 'Xác nhận xoá nhân viên',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: "p-button-danger p-button-text",
+      rejectButtonStyleClass: "p-button-text p-button-text",
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptLabel: 'Xác nhận',
+      rejectLabel: 'Huỷ',
+
+      accept: () => {
+        this.employeeService.DeleteEmployee(employee.id).pipe(
+          takeUntil(this.destroyed$),
+          catchError((error) => {
+            return of(error);
+          })
+        ).subscribe((result) => {
+          if (result) {
+            this.loadPagedEmployee(
+              this.departmentId, 
+              this.paginator?.page, 
+              this.paginator?.pageCount, 
+              this.searchTermEl?.nativeElement.value
+            );
+          };
+          this.toastService.success('Xoá nhân viên thành công')
+        });
+      },
     });
   }
 

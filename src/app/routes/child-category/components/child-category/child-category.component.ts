@@ -11,6 +11,7 @@ import { CategoryService } from '../../../../data/services/category.service';
 import { catchError, of, tap } from 'rxjs';
 import { CategoryResponseDto } from '../../../../data/types/category-response.dto';
 import { TableModule } from 'primeng/table';
+import { DepartmentService } from '../../../../data/services/department.service';
 
 @Component({
   selector: 'app-child-category',
@@ -34,12 +35,14 @@ export class ChildCategoryComponent extends BaseComponent implements OnInit{
   public categories: CategoryDto[] = [];
   public inputViewable: boolean = true;
   public childCategories: CategoryDto[] = [];
+  private departmentId = this.departmentService.getDepartmentnState().id ?? 0;
 
   constructor(
     private activatedRoute : ActivatedRoute,
     private fb: FormBuilder,
     private categoryService: CategoryService,
-    private router: Router
+    private router: Router,
+    private departmentService: DepartmentService
   ) {
     super();
     this.categoryForm = this.fb.group({
@@ -52,9 +55,9 @@ export class ChildCategoryComponent extends BaseComponent implements OnInit{
     this.id = this.activatedRoute.snapshot.paramMap.get('id') ?? '1';
 
     if (this.id != ":id"){
-      this.categoryService.getCategory(2, parseInt(this.id)).pipe(
-        tap((childCategories: CategoryResponseDto) => {
-          this.categories = childCategories.data;
+      this.categoryService.getCategory(this.departmentId, parseInt(this.id)).pipe(
+        tap((childCategories: CategoryDto[]) => {
+          this.categories = childCategories;
         }),
         catchError((err) => of(err))
       ).subscribe();
@@ -70,7 +73,7 @@ export class ChildCategoryComponent extends BaseComponent implements OnInit{
       this.categories.push({
         name: this.categoryForm.value.categoryName,
         weighting: this.categoryForm.value.weighting,
-        departmentId: 2, // Fix cứng
+        departmentId: this.departmentId,
         parentId: parseInt(this.id)
       })
       this.categoryForm.patchValue({categoryName: "", weighting: 0})
@@ -88,11 +91,7 @@ export class ChildCategoryComponent extends BaseComponent implements OnInit{
       catchError((err) => of(err))
     ).subscribe();
   }
-
-  editCategory(){
-    this.inputViewable = false;
-  }
-
+  
   cancelEditCategory(){
     this.inputViewable = true;
   }
@@ -100,12 +99,10 @@ export class ChildCategoryComponent extends BaseComponent implements OnInit{
   navigateToChild(id: number | null){
     this.router.navigateByUrl(`/child-category/${id}`);
 
-    //Fix cứng
-    this.categoryService.getCategory(2, id).pipe(
-      tap((childCategories: CategoryResponseDto) => {
-        this.categories = childCategories.data;
-      }),
-      catchError((err) => of(err))
-    ).subscribe();
+    if (id !== null) {
+      window.location.href = `/child-category/${id}`;
+    } else {
+      this.router.navigate(['/category']);
+    }
   }
 }

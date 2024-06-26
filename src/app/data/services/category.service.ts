@@ -17,11 +17,15 @@ export class CategoryService {
   public getCategory(departmentId: number, parentId: number | null){
     let parentIdParam = parentId === null ? '' : `&parentId=${parentId}`;
 
-    return this.httpClient.get<CategoryResponseDto>(`${environment.apiEndpoint}/Category?departmentId=${departmentId}${parentIdParam}`);
+    return this.httpClient.get<CategoryDto[]>(`${environment.apiEndpoint}/Category?departmentId=${departmentId}${parentIdParam}`);
   }
 
   public postCategory(categoryList: CategoryDto[]){
     return this.httpClient.post<CategoryResponseDto["data"]>(`${environment.apiEndpoint}/Category`, categoryList);
+  }
+
+  public updateCategory(category: CategoryDto){
+    return this.httpClient.put<MessageRes>(`${environment.apiEndpoint}/Category`,category); 
   }
 
   public deleteCategory(categoryId: number){

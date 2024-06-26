@@ -14,6 +14,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastService } from '../../../../data/services/toast.service';
 import { ToastModule } from 'primeng/toast';
+import { DepartmentService } from '../../../../data/services/department.service';
 
 @Component({
   selector: 'app-category',
@@ -41,6 +42,8 @@ export class CategoryComponent extends BaseComponent implements OnInit{
   public addCateVisible: boolean = false;
   public categoryString: string = "";
   public fixNameVisible: {[key: number]: boolean} = {};
+  
+  private departmentId = this.departmentService.getDepartmentnState().id ?? 0;
 
   constructor(
     private categoryService: CategoryService,
@@ -48,14 +51,17 @@ export class CategoryComponent extends BaseComponent implements OnInit{
     private confirmationService: ConfirmationService,
     private toastService: ToastService,
     private readonly messageService: MessageService,
+    private departmentService: DepartmentService
   ) {
     super();
   }
   
   ngOnInit(): void {
-    this.categoryService.getCategory(2, null).pipe(
-      tap((parentCategory: CategoryResponseDto) => {
-        this.parentCategory = parentCategory.data;
+    this.categoryService.getCategory(this.departmentId, null).pipe(
+      tap((parentCategory: CategoryDto[]) => {
+        this.parentCategory = parentCategory;
+        console.log(parentCategory);
+        
       }),
       catchError((err) => of(err))
     ).subscribe();
@@ -71,7 +77,7 @@ export class CategoryComponent extends BaseComponent implements OnInit{
     .filter(item => item !== '')
     .map(item => ({
       name: item,
-      departmentId: 2 // Fix cứng
+      departmentId: this.departmentId
     }));
 
     this.categoryService.postCategory(categoryReq).pipe(
@@ -79,9 +85,9 @@ export class CategoryComponent extends BaseComponent implements OnInit{
         this.addCateVisible = false;
       }),
       switchMap(() => {
-        return this.categoryService.getCategory(2, null).pipe(
-          tap((parentCategory: CategoryResponseDto) => {
-            this.parentCategory = parentCategory.data;
+        return this.categoryService.getCategory(this.departmentId, null).pipe(
+          tap((parentCategory: CategoryDto[]) => {
+            this.parentCategory = parentCategory;
           }),
           catchError((err) => of(err))
         )
@@ -94,6 +100,33 @@ export class CategoryComponent extends BaseComponent implements OnInit{
     this.categoryString = "";
   }
 
+  updateNameCategory(categoryId: number, categoryName: string){
+    this.categoryService.updateCategory({
+      id: categoryId,
+      departmentId: this.departmentId,
+      name: categoryName
+    }).pipe(
+      tap((res) => {
+        this.fixNameVisible[categoryId] = false;
+        this.toastService.success(res.message);
+      }),
+      catchError((err) => {
+        this.toastService.fail(err);
+        return of(err);
+      }),
+      switchMap(() => {
+        return this.categoryService.getCategory(this.departmentId, null).pipe(
+          tap((parentCategory: CategoryDto[]) => {
+            this.parentCategory = parentCategory;
+          }),
+          catchError((err) => {
+            return of(err);
+          })
+        )
+      })
+    ).subscribe();
+  }
+
   deleteCategory(categoryId: number){
     this.categoryService.deleteCategory(categoryId).pipe(
       tap((res) => {
@@ -103,9 +136,9 @@ export class CategoryComponent extends BaseComponent implements OnInit{
         return of(err);
       }),
       switchMap(() => {
-        return this.categoryService.getCategory(2, null).pipe(
-          tap((parentCategory: CategoryResponseDto) => {
-            this.parentCategory = parentCategory.data;
+        return this.categoryService.getCategory(this.departmentId, null).pipe(
+          tap((parentCategory: CategoryDto[]) => {
+            this.parentCategory = parentCategory;
           }),
           catchError((err) => {
             return of(err);

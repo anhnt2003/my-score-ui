@@ -1,5 +1,5 @@
 export const DefaultPagingOptions = {
-    pageSize: 5,
+    pageSize: 30,
     pageSizeOptions: [
         { label: 5, value: 5 },
         { label: 10, value: 10 },

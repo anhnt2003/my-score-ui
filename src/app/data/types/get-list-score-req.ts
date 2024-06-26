@@ -1,5 +1,5 @@
 export interface GetListScoreReq {
-    employeeId: number;
+    userId: number;
 
     departmentId: number;
 }

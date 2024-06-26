@@ -29,6 +29,6 @@ export class CategoryService {
   }
 
   public deleteCategory(categoryId: number){
-    return this.httpClient.delete<MessageRes>(`${environment.apiEndpoint}/Category/?categoryId=${categoryId}`);
+    return this.httpClient.delete<MessageRes>(`${environment.apiEndpoint}/Category/${categoryId}`);
   }
 }

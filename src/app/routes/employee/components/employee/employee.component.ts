@@ -102,7 +102,6 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
     private readonly userService: UserService,
     private readonly toastService: ToastService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService,
     public authService: AuthService
   ) {
     super();

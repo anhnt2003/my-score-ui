@@ -52,7 +52,7 @@ export class DashboardComponent extends BaseComponent implements OnInit {
 
   private initChartData() {
     this.scoreService.getListScore({
-      employeeId: 0,
+      userId: 0,
       departmentId: 1
     }).pipe(
       map((dataScore) => dataScore.filter((item) => item.parentId == null)),

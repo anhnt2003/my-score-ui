@@ -21,7 +21,6 @@ export class DepartmentComponent extends BaseComponent implements OnInit {
   @Input() dialogVisibleValue: boolean = false;
   public listDepartmentsData$ = new Observable<DepartmentDto[]>();
   public userId = this.authService.getAuthState().userId ?? 0;
-  // public departmentId = this.departmentService.getDepartmentnState().id ?? 0;
 
   constructor(
     private readonly departmentService: DepartmentService,

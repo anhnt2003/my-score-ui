@@ -1,4 +1,15 @@
 <div class="contaienr-score-detail">
+    @if(existedCategoryData$ | async; as existedCategory) {
+        <div class="alert-dialog">
+            <p-dialog header="Header" [visible]="existedCategory" [modal]="true" (visibleChange)="existedCategorySubject.next(false)"
+                [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [style]="{ width: '50vw' }" [draggable]="true"
+                [resizable]="false">
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, deleniti, tenetur eaque aliquam eligendi numquam doloremque nisi laboriosam dolore qui, molestias ut rerum maiores voluptate doloribus exercitationem ipsam? Ea, in.
+                </p>
+            </p-dialog>
+        </div>
+    }
     <p-table #dt2 [value]="scoreDetailData" dataKey="id">
         <ng-template pTemplate="caption">
             <div class="search">
@@ -10,16 +21,24 @@
                 </p-iconField>
             </div>
         </ng-template>
-        <ng-template pTemplate="header">
+        <ng-template pTemplate="header" let-data>
             <tr>
                 <th>Email</th>
-                <th>Title</th>
+                @for(column of scoreDetailData[0]?.scoreArray; track column; let i = $index) {
+                    <th>{{ column.categoryName }}</th>
+                }
+                <th></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-data>
             <tr>
                 <td>{{ data.email }}</td>
-                <td>{{ data.jobTitle }}</td>
+                @for(column of scoreDetailData; track column; let i = $index) {
+                    @for(score of column.scoreArray; track score; let j = $index) {
+                        <td>{{ score.scoreCalculated }}</td>
+                    }
+                }
+                <td><p-button (click)="openReviewDialog(data.userId)" label="Đánh giá người dùng" /></td>
             </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
@@ -30,7 +49,30 @@
     </p-table>
     <div class="pagination">
         <span class="mx-1 text-color">số lượng trong trang: </span>
-        <p-dropdown [options]="pagingOptions.pageSizeOptions" optionLabel="label" optionValue="value" [(ngModel)]="pagingOptions.pageSize" (ngModelChange)="0" />
-        <p-paginator [rows]="pagingOptions.pageSize" [totalRecords]="120" (onPageChange)="paginatorSubject.next()" [showCurrentPageReport]="true" currentPageReportTemplate="{first} - {last} of {totalRecords}" [showPageLinks]="false" [showFirstLastIcon]="false"></p-paginator>
+        <p-dropdown [options]="pagingOptions.pageSizeOptions"
+                    optionLabel="label" 
+                    optionValue="value"
+                    [(ngModel)]="pagingOptions.pageSize" 
+                    (ngModelChange)="0" />
+        <p-paginator [rows]="pagingOptions.pageSize" 
+                     [totalRecords]="120" 
+                     (onPageChange)="paginatorSubject.next()"
+                     [showCurrentPageReport]="true" 
+                     currentPageReportTemplate="{first} - {last} of {totalRecords}"
+                     [showPageLinks]="false" [showFirstLastIcon]="false"></p-paginator>
     </div>
+    <p-dialog class="dialog-container container" header="Nhập điểm" [modal]="true" [(visible)]="reviewUserDialog" [draggable]="false">
+        <span class="p-text-secondary block mb-5">Nhập điểm nhân viên</span>
+            @for (category of categoriesSkill; track category) {
+                <p-panel [header]="category.name" [toggleable]="true" [collapsed]="true">
+                    @for(categoryWithScore of categoryEnterScore$ | async; track categoryWithScore){
+                        <form [formGroup]="addScoreForm" (submit)="formSubmitSubject.next()">
+                            <p>{{categoryWithScore.name}}</p>
+                            <p-inputNumber formControlName="scoreEntered" mode="decimal" [minFractionDigits]="1"/> 
+                        </form>
+                    }
+                </p-panel>
+            }
+        <p-button type="submit" label="Xác nhận" />
+    </p-dialog>
 </div>

@@ -17,7 +17,7 @@ export class CategoryService {
   public getCategory(departmentId: number, parentId: number | null){
     let parentIdParam = parentId === null ? '' : `&parentId=${parentId}`;
 
-    return this.httpClient.get<CategoryResponseDto>(`${environment.apiEndpoint}/Category?departmentId=${departmentId}${parentIdParam}`);
+    return this.httpClient.get<CategoryDto[]>(`${environment.apiEndpoint}/Category?departmentId=${departmentId}${parentIdParam}`);
   }
 
   public postCategory(categoryList: CategoryDto[]){
@@ -25,6 +25,6 @@ export class CategoryService {
   }
 
   public deleteCategory(categoryId: number){
-    return this.httpClient.delete<MessageRes>(`${environment.apiEndpoint}/Category/?categoryId=${categoryId}`);
+    return this.httpClient.delete<MessageRes>(`${environment.apiEndpoint}/Category/${categoryId}`);
   }
 }

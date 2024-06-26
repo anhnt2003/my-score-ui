@@ -3,7 +3,9 @@ import { Injectable } from '@angular/core';
 
 import {
   BehaviorSubject,
+  catchError,
   map,
+  of,
   switchMap,
 } from 'rxjs';
 
@@ -32,19 +34,23 @@ export class AuthService {
   ) {
     this.externalAuthService.authState.pipe(
       switchMap(externalLogin => {
-        return this.verifyExternalLogin(externalLogin);
+        return this.verifyExternalLogin(externalLogin).pipe(
+          catchError((error) => of(null))
+        );
       })
     ).subscribe((authResponse) => {
-      const authContext: AuthContext = {
-        userId: authResponse.userId,
-        userName: authResponse.userName,
-        email: authResponse.email,
-        token: authResponse.token,
-        roles: authResponse.roles,
-        avatar: authResponse.avatar
-      };
-      this.authState.next(authContext);
-      localStorage[LOCAL_STORAGE_AUTH_KEY] = JSON.stringify(authContext);
+      if(authResponse) {
+        const authContext: AuthContext = {
+          userId: authResponse.userId,
+          userName: authResponse.userName,
+          email: authResponse.email,
+          token: authResponse.token,
+          roles: authResponse.roles,
+          avatar: authResponse.avatar
+        };
+        this.authState.next(authContext);
+        localStorage[LOCAL_STORAGE_AUTH_KEY] = JSON.stringify(authContext);
+      }
     });
   }
 

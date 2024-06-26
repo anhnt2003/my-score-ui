@@ -52,11 +52,7 @@
                     <div class="button-action">
                         <button type="button" pButton pRipple icon="pi pi-user-edit">
                         </button>
-                        <div class="card flex justify-content-center gap-2">
-                            <p-toast position="bottom-right" />
-                            <p-confirmDialog />
-                            <p-button (click)="handleDeleteEmployee($event, data)" label="Delete" severity="danger" [outlined]="true" />
-                        </div>
+                        <p-button (click)="handleDeleteEmployee($event, data)" label="Delete" severity="danger" [outlined]="true" />
                     </div>
                 </td>
             </tr>
@@ -72,5 +68,9 @@
         <p-dropdown [options]="pagingOptions.pageSizeOptions" optionLabel="label" optionValue="value" [(ngModel)]="pagingOptions.pageSize" (ngModelChange)="perPageModel" />
         <p-paginator [first]="perPageModel" [rows]="pagingOptions.pageSize" #paginator [totalRecords]="totalCountData" (onPageChange)="paginatorSubject.next()" [showCurrentPageReport]="true" currentPageReportTemplate="{first} - {last} of {totalRecords}" [showPageLinks]="false"
             [showFirstLastIcon]="false"></p-paginator>
+    </div>
+    <div class="confirm-dialog">
+        <p-toast position="bottom-right" />
+        <p-confirmDialog/>
     </div>
 </div>

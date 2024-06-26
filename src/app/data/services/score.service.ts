@@ -14,6 +14,10 @@ export class ScoreService {
 
   constructor(private readonly httpClient: HttpClient) { }
 
+  public createScore(params: ScoreDto[]) {
+    return this.httpClient.post<ScoreDto[]>(`${environment.apiEndpoint}/score`, params)
+  }
+  
   public getListScore(params: GetListScoreReq) {
     return this.httpClient.get<ScoreDto[]>(`${environment.apiEndpoint}/score`, {
       params: { ...params }

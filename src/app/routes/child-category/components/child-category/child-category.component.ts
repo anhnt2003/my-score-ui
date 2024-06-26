@@ -53,9 +53,6 @@ export class ChildCategoryComponent extends BaseComponent implements OnInit{
 
     if (this.id != ":id"){
       this.categoryService.getCategory(2, parseInt(this.id)).pipe(
-        tap((childCategories: CategoryResponseDto) => {
-          this.categories = childCategories.data;
-        }),
         catchError((err) => of(err))
       ).subscribe();
     }
@@ -102,9 +99,6 @@ export class ChildCategoryComponent extends BaseComponent implements OnInit{
 
     //Fix cứng
     this.categoryService.getCategory(2, id).pipe(
-      tap((childCategories: CategoryResponseDto) => {
-        this.categories = childCategories.data;
-      }),
       catchError((err) => of(err))
     ).subscribe();
   }

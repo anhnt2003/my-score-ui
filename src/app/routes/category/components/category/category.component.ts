@@ -54,9 +54,6 @@ export class CategoryComponent extends BaseComponent implements OnInit{
   
   ngOnInit(): void {
     this.categoryService.getCategory(2, null).pipe(
-      tap((parentCategory: CategoryResponseDto) => {
-        this.parentCategory = parentCategory.data;
-      }),
       catchError((err) => of(err))
     ).subscribe();
   }
@@ -80,9 +77,6 @@ export class CategoryComponent extends BaseComponent implements OnInit{
       }),
       switchMap(() => {
         return this.categoryService.getCategory(2, null).pipe(
-          tap((parentCategory: CategoryResponseDto) => {
-            this.parentCategory = parentCategory.data;
-          }),
           catchError((err) => of(err))
         )
       }),
@@ -104,9 +98,6 @@ export class CategoryComponent extends BaseComponent implements OnInit{
       }),
       switchMap(() => {
         return this.categoryService.getCategory(2, null).pipe(
-          tap((parentCategory: CategoryResponseDto) => {
-            this.parentCategory = parentCategory.data;
-          }),
           catchError((err) => {
             return of(err);
           })

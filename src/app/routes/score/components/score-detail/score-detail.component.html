@@ -61,18 +61,25 @@
                      currentPageReportTemplate="{first} - {last} of {totalRecords}"
                      [showPageLinks]="false" [showFirstLastIcon]="false"></p-paginator>
     </div>
-    <p-dialog class="dialog-container container" header="Nhập điểm" [modal]="true" [(visible)]="reviewUserDialog" [draggable]="false">
-        <span class="p-text-secondary block mb-5">Nhập điểm nhân viên</span>
+    <p-dialog class="dialog-container container" header="Thêm tiêu chí" [modal]="true" [(visible)]="reviewUserDialog" [draggable]="false">
+        <span class="p-text-secondary block mb-5">Nhập điểm người dùng</span>
+        <form [formGroup]="addScoreForm" (submit)="formSubmitSubject.next()">
             @for (category of categoriesSkill; track category) {
                 <p-panel [header]="category.name" [toggleable]="true" [collapsed]="true">
-                    @for(categoryWithScore of categoryEnterScore$ | async; track categoryWithScore){
-                        <form [formGroup]="addScoreForm" (submit)="formSubmitSubject.next()">
-                            <p>{{categoryWithScore.name}}</p>
-                            <p-inputNumber formControlName="scoreEntered" mode="decimal" [minFractionDigits]="1"/> 
-                        </form>
-                    }
+                        <div formArrayName="entries">
+                            @for (item of entries.controls; track $index) {
+                                @if(category.categoryChildren[$index]?.name){
+                                    <div [formGroupName]="$index">
+                                        <p>{{category.categoryChildren[$index].name}}</p>
+                                        <p-inputNumber (value)="userScore[$index].scoreEntered" formControlName="scoreEntered" mode="decimal" [minFractionDigits]="1"/>
+                                    </div>
+                                }
+                                
+                            }
+                        </div>
                 </p-panel>
             }
-        <p-button type="submit" label="Xác nhận" />
+            <p-button type="submit" label="Xác nhận" />
+        </form>
     </p-dialog>
 </div>

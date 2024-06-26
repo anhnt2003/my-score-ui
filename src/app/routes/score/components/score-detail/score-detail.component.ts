@@ -44,6 +44,7 @@ import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } fr
 import { PanelModule } from 'primeng/panel';
 import { ScoreDto } from '../../../../data/types/score.dto';
 import { CategoryToReviewDto } from '../../../../data/types/category-to-review.dto';
+import { CategoryToReviewResponseDto } from '../../../../data/types/category-to-review-response.dto';
 
 @Component({
   selector: 'app-score-detail',
@@ -81,7 +82,6 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
   public formSubmitSubject = new Subject<void>();
   public userScore: ScoreDto[] = [];
 
-  private organizationId!: number;
   private formSubmited$ = this.formSubmitSubject.asObservable();
   private userIdIsReviewed!: number;
   private addScore!: ScoreDto[];
@@ -101,18 +101,21 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
   ) {
     super();
     this.addScoreForm = this.fb.group({
-      userId: [, Validators.required],
-      organizationId: [,Validators.required],
-      scoreEntered: [, Validators.required],
-      categoryId:[, Validators.required],
-      reviewBy:[, Validators.required]
-    })
+      entries: this.fb.array([])
+    });
   }
 
   ngOnInit(): void {
     this.loadPagedScoreEmployee(this.departmentId);
     this.checkExistedCategory();
     this.submitAddCoreForm();
+    this.categoryService.getCategoryToReview(this.departmentId).pipe(
+      tap((childCategories: CategoryToReviewResponseDto) => {
+        this.categoriesSkill = childCategories.data;
+      }),
+      catchError(err => of(err)),
+      takeUntil(this.destroyed$)
+    ).subscribe();
   }
 
   ngAfterViewInit(): void {
@@ -188,7 +191,7 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
       childCategory.categoryChildren.forEach((categoryEnterScore, index) => {
         entries.push(this.fb.group({
           userId: [this.userIdIsReviewed, Validators.required],
-          organizationId: [this.organizationId, Validators.required],
+          departmentId: [this.departmentId, Validators.required],
           scoreEntered: [this.userScore[index]?.scoreEntered ?? '', Validators.required],
           categoryId: [categoryEnterScore.id, Validators.required],
         }));
@@ -196,17 +199,17 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
     });
   }
 
-  private get entries(): FormArray {
+  public get entries(): FormArray {
     return this.addScoreForm.get('entries') as FormArray;
   }
 
-  private submitAddCoreForm(){
+  private submitAddCoreForm() {
     this.formSubmited$.pipe(
       tap(() => {
         const entries = this.addScoreForm.get('entries') as FormArray;
         this.addScore = [];
         entries.controls.forEach((item) => {
-          if(item.value.scoreEntered !== '')
+          if (item.value.scoreEntered !== '')
             this.addScore.push(item.value)
         })
       }),
@@ -215,14 +218,19 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
           return false;
         return true;
       }),
-      switchMap(() => 
-        this.scoreService.createScore(this.addScore).pipe(
+      switchMap(() => {
+        let addScoreMap = this.userScore.map(scoreDefault => {
+          const matchedItem = this.addScore.find(scoreEntered => scoreDefault.categoryId === scoreEntered.categoryId);
+          return matchedItem ? { ...scoreDefault, ...matchedItem } : scoreDefault;
+        });
+        return this.scoreService.createScore(addScoreMap).pipe(
           tap((data: ScoreDto[]) => {
             this.reviewUserDialog = false;
             this.addScore = [];
           }),
           catchError((err) => of(err))
         )
+      }
       ),
       catchError((err) => {
         console.log(err);

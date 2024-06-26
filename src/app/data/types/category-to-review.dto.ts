@@ -5,7 +5,7 @@ export interface CategoryToReviewDto {
 
     name: string;
 
-    organizationId: number;
+    departmentId: number;
 
     weighting?: number;
 

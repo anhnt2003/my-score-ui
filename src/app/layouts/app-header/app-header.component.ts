@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import {
   AutoCompleteModule,
@@ -8,29 +8,44 @@ import { ButtonModule } from 'primeng/button';
 import { BaseComponent } from '../../core/components/base.component';
 import { AuthService } from '../../data/services/auth.service';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
-import { DropdownModule } from 'primeng/dropdown';
+import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
 import { Observable } from 'rxjs';
 import { DepartmentDto } from '../../data/types/department.dto';
 import { DepartmentService } from '../../data/services/department.service';
 import { CommonModule } from '@angular/common';
+import { LOCAL_STORAGE_DEPARTMENT_KEY } from '../../core/common/constants';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-app-header',
   standalone: true,
-  imports: [ButtonModule, AutoCompleteModule, OverlayPanelModule, DropdownModule, CommonModule],
+  imports: [
+    ButtonModule, 
+    AutoCompleteModule, 
+    OverlayPanelModule, 
+    DropdownModule, 
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink
+  ],
   templateUrl: './app-header.component.html',
   styleUrl: './app-header.component.scss'
 })
 export class AppHeaderComponent extends BaseComponent implements OnInit {
 
   public sidebarVisible = false;
-  public selectedDepartment = new FormControl();
+  public formGroup!: FormGroup;
   public selectDepartmentData$ = new Observable<DepartmentDto[]>(); 
+  
   constructor(
     public authService: AuthService,
-    private readonly departmentService: DepartmentService
+    private readonly departmentService: DepartmentService,
+    private router: Router
   ) {
     super();
+    this.formGroup = new FormGroup({
+      selectedDepartment: new FormControl<DepartmentDto | null>(JSON.parse(sessionStorage[LOCAL_STORAGE_DEPARTMENT_KEY]))
+    });
   }
 
   ngOnInit(): void {
@@ -40,5 +55,14 @@ export class AppHeaderComponent extends BaseComponent implements OnInit {
   public logOut() {
     this.authService.logOut();
     location.reload();
+  }
+
+  public changeValueDropDown(event: DropdownChangeEvent){
+    sessionStorage[LOCAL_STORAGE_DEPARTMENT_KEY] = JSON.stringify(event.value);
+    location.reload();
+  }
+
+  public linkToChooseDepartment(){
+    this.router.navigate(["/department"]);
   }
 }

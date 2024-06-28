@@ -1,4 +1,20 @@
-<div class="container-employee-org">
+<div class="container-employee-department">
+    @if(existedCategory$ | async; as existedCategory) {
+        <div class="alert-dialog">
+            <p-dialog header="Header" [visible]="existedCategory" [modal]="true" (visibleChange)="existedCategorySubject.next(false)"
+                [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [style]="{ width: '50vw' }" [draggable]="true"
+                [resizable]="false">
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, deleniti, tenetur eaque aliquam eligendi numquam doloremque nisi laboriosam dolore qui, molestias ut rerum maiores voluptate doloribus exercitationem ipsam? Ea, in.
+                </p>
+            </p-dialog>
+        </div>
+    }
+    @if(visibleEditEmployee$ | async; as employeeData) {
+        <app-employee-edit-form 
+        [employeeData]="employeeData"
+        (visibilityChange)="this.visibleEditEmployeeSubject.next(null)"></app-employee-edit-form>
+    }
     <p-table #dt2 [value]="employeeData" dataKey="id">
         <ng-template pTemplate="caption">
             <div class="header-action">
@@ -13,26 +29,9 @@
                 <div class="button-add">
                     <button icon="pi pi-plus" pButton pRipple (click)="openAddUserDialog()" label="Thêm nhân viên" class="p-button-success">
                 </button>
-                    <p-dialog header="Thêm nhân viên vào team" [modal]="true" [(visible)]="visibleAddUserDialog">
-                        <span class="text-span">Tìm kiếm bằng username, hoặc email</span>
-                        <p-autoComplete [(ngModel)]="selectedUserModel" placeholder="Tìm kiếm" [suggestions]="listUsersFound" (completeMethod)="userFilter($event)" field="userName">
-                            <ng-template let-user pTemplate="item">
-                                <div class="box-select">
-                                    <img [src]="user.avatar" style="width: 18px" />
-                                    <div class="info">{{ user.email }}</div>
-                                </div>
-                            </ng-template>
-                        </p-autoComplete>
-                        <div class="title">
-                            <p-floatLabel>
-                                <input type="text" pInputText [(ngModel)]="jobTitleModel" />
-                                <label for="jobTitle">Chức danh</label>
-                            </p-floatLabel>
-                        </div>
-                        <div class="button-footer">
-                            <p-button label="Xác nhận" (click)="handleAddUser()" />
-                        </div>
-                    </p-dialog>
+                @if(visibleAddEmployee$ | async; as visible) {
+                    <app-employee-create-dialog [visibleDialog]="visible" (visibleEventChange)="closeAddUserDialog()"></app-employee-create-dialog>
+                    }
                 </div>
             </div>
         </ng-template>
@@ -50,8 +49,10 @@
                 <td>{{ data.jobTitle }}</td>
                 <td>
                     <div class="button-action">
-                        <button type="button" pButton pRipple icon="pi pi-user-edit">
-                        </button>
+                        @if(this.showButtonReview) {
+                            <p-button (click)="openReviewDialog(data.userId)" label="Đánh giá nhân viên" /> 
+                        }
+                        <p-button (click)="openEditEmployeeForm(data)" label="Edit" />
                         <p-button (click)="handleDeleteEmployee($event, data)" label="Delete" severity="danger" [outlined]="true" />
                     </div>
                 </td>
@@ -73,4 +74,23 @@
         <p-toast position="bottom-right" />
         <p-confirmDialog/>
     </div>
+    <p-dialog class="dialog-container container" header="Nhập điểm nhân viên" [modal]="true" [(visible)]="reviewUserDialog" [draggable]="false">
+        <form [formGroup]="addScoreForm" (submit)="formSubmitSubject.next()">
+            @for (category of categoriesSkill; track category) {
+                <p-panel [header]="category.name" [toggleable]="true" [collapsed]="true">
+                        <div formArrayName="entries">
+                            @for (item of entries.controls; track $index) {
+                                @if(category.categoryChildren[$index]?.name){
+                                    <div [formGroupName]="$index">
+                                        <p>{{category.categoryChildren[$index].name}}</p>
+                                        <p-inputNumber (value)="userScore[$index].scoreEntered" formControlName="scoreEntered" mode="decimal" [minFractionDigits]="1"/>
+                                    </div>
+                                }
+                            }
+                        </div>
+                </p-panel>
+            }
+            <p-button type="submit" label="Xác nhận" />
+        </form>
+    </p-dialog>
 </div>

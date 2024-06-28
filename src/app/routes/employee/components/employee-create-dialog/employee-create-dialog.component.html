@@ -1,0 +1,22 @@
+<div class="container-employee-create-form">
+    <p-dialog header="Thêm nhân viên vào team" [modal]="true" [visible]="visibleDialog" (visibleChange)="closeDialog()">
+        <span class="text-span">Tìm kiếm bằng username, hoặc email</span>
+        <p-autoComplete [(ngModel)]="selectedUserModel" placeholder="Tìm kiếm" [suggestions]="listUsersFound" (completeMethod)="userFilter($event)" field="userName">
+            <ng-template let-user pTemplate="item">
+                <div class="box-select">
+                    <img [src]="user.avatar" style="width: 18px" />
+                    <div class="info">{{ user.email }}</div>
+                </div>
+            </ng-template>
+        </p-autoComplete>
+        <div class="title">
+            <p-floatLabel>
+                <input type="text" pInputText [(ngModel)]="jobTitleModel" />
+                <label for="jobTitle">Chức danh</label>
+            </p-floatLabel>
+        </div>
+        <div class="button-footer">
+            <p-button label="Xác nhận" (click)="handleAddUser()" />
+        </div>
+    </p-dialog>
+</div>

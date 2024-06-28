@@ -1,29 +1,36 @@
-import { Component, OnInit } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { DialogModule } from 'primeng/dialog';
+import {
+  Component,
+  OnInit,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import {
+  ActivatedRoute,
+  Router,
+} from '@angular/router';
+
+import {
+  catchError,
+  of,
+  tap,
+} from 'rxjs';
+
 import { BaseComponent } from '../../../../core/components/base.component';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { ActivatedRoute, Router } from '@angular/router';
-import { CategoryDto } from '../../../../data/types/category.dto';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CategoryService } from '../../../../data/services/category.service';
-import { catchError, of, tap } from 'rxjs';
-import { CategoryResponseDto } from '../../../../data/types/category-response.dto';
-import { TableModule } from 'primeng/table';
-import { DepartmentService } from '../../../../data/services/department.service';
+import {
+  DepartmentService,
+} from '../../../../data/services/department.service';
+import { CategoryDto } from '../../../../data/types/category.dto';
+import { SharedModule } from '../../../../shared/module/shared.module';
 
 @Component({
   selector: 'app-child-category',
   standalone: true,
   imports: [
-    ButtonModule,
-    InputTextModule,
-    DialogModule,
-    InputNumberModule,
-    ReactiveFormsModule,
-    FormsModule,
-    TableModule
+    SharedModule
   ],
   templateUrl: './child-category.component.html',
   styleUrl: './child-category.component.scss'

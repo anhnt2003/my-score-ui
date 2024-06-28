@@ -5,68 +5,63 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 
 import {
   ConfirmationService,
   MessageService,
 } from 'primeng/api';
+import { PaginatorState } from 'primeng/paginator';
 import {
-  AutoCompleteCompleteEvent,
-  AutoCompleteModule,
-} from 'primeng/autocomplete';
-import { ButtonModule } from 'primeng/button';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { DialogModule } from 'primeng/dialog';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
-import {
-  PaginatorModule,
-  PaginatorState,
-} from 'primeng/paginator';
-import { TableModule } from 'primeng/table';
-import { ToastModule } from 'primeng/toast';
-import {
+  BehaviorSubject,
   catchError,
-  debounceTime,
   filter,
   merge,
+  Observable,
   of,
   Subject,
+  switchMap,
   takeUntil,
   tap,
 } from 'rxjs';
 
 import { BaseComponent } from '../../../../core/components/base.component';
 import { AuthService } from '../../../../data/services/auth.service';
+import { CategoryService } from '../../../../data/services/category.service';
 import {
   DepartmentService,
 } from '../../../../data/services/department.service';
 import { EmployeeService } from '../../../../data/services/employee.service';
+import { ScoreService } from '../../../../data/services/score.service';
 import { ToastService } from '../../../../data/services/toast.service';
-import { UserService } from '../../../../data/services/user.service';
+import {
+  CategoryToReviewResponseDto,
+} from '../../../../data/types/category-to-review-response.dto';
+import {
+  CategoryToReviewDto,
+} from '../../../../data/types/category-to-review.dto';
+import { CategoryDto } from '../../../../data/types/category.dto';
 import { EmployeeDto } from '../../../../data/types/employee.dto';
-import { UserDto } from '../../../../data/types/user.dto';
+import { ScoreDto } from '../../../../data/types/score.dto';
 import { DefaultPagingOptions } from '../../../../shared/common/constants';
+import { SharedModule } from '../../../../shared/module/shared.module';
+import {
+  EmployeeCreateDialogComponent,
+} from '../employee-create-dialog/employee-create-dialog.component';
+import { EmployeeEditFormComponent } from '../employee-edit-form/employee-edit-form.component';
 
 @Component({
   selector: 'app-employee',
   standalone: true,
   imports: [
-    TableModule, 
-    IconFieldModule, 
-    InputIconModule, 
-    ButtonModule, 
-    DialogModule, 
-    AutoCompleteModule, 
-    FormsModule, 
-    PaginatorModule,
-    FloatLabelModule,
-    InputTextModule,
-    ConfirmDialogModule,
-    ToastModule
+    SharedModule,
+    EmployeeCreateDialogComponent,
+    EmployeeEditFormComponent
   ],
   providers: [
     ConfirmationService,
@@ -81,15 +76,30 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
   public employeeData: EmployeeDto[] = [];
   public totalCountData: number = 0;
   public pagingOptions = DefaultPagingOptions;
-  public visibleAddUserDialog = false;
-  public listUsersFound: UserDto[] = [];
-  public selectedUserModel: UserDto | undefined;
-  public jobTitleModel: string | undefined;
   public perPageModel: number = 0;
-  public searchTermSubject = new Subject<string>();
-  public paginatorSubject = new Subject<void>();
   public userId = this.authService.getAuthState().userId ?? 0;
   public departmentId = this.departmentService.getDepartmentnState().id ?? 0;
+  public categoriesSkill: CategoryToReviewDto[] = [];
+  public reviewUserDialog: boolean = false;
+  public showButtonReview: boolean = false;
+  public addScoreForm: FormGroup = new FormGroup({});
+  public userScore: ScoreDto[] = [];
+  public searchTermSubject = new Subject<string>();
+  public paginatorSubject = new Subject<void>();
+  public formSubmitSubject = new Subject<void>();
+  public categoryEnterScoreSubject = new Subject<CategoryDto[]>();
+  public categoryEnterScore$: Observable<CategoryDto[]> = this.categoryEnterScoreSubject.asObservable();
+  public existedCategorySubject = new BehaviorSubject<boolean>(false); 
+  public existedCategory$ = this.existedCategorySubject.asObservable();
+  public visibleAddEmployeeSubject = new BehaviorSubject<boolean>(false);
+  public visibleAddEmployee$ = this.visibleAddEmployeeSubject.asObservable();
+
+  private formSubmited$ = this.formSubmitSubject.asObservable();
+  private userIdIsReviewed!: number;
+  private addScore!: ScoreDto[];
+
+  public visibleEditEmployeeSubject = new BehaviorSubject<EmployeeDto | null>(null);
+  public visibleEditEmployee$ = this.visibleEditEmployeeSubject.asObservable();  
 
   private paginatorChanged$ = this.paginatorSubject.asObservable();
   private searchTermChanged$ = this.searchTermSubject.asObservable();
@@ -98,9 +108,11 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
   @ViewChild('paginator') paginator: PaginatorState | undefined;
   constructor(
     private readonly employeeService: EmployeeService,
+    private readonly categoryService: CategoryService,
+    private readonly scoreService: ScoreService,
     private readonly departmentService: DepartmentService,
-    private readonly userService: UserService,
     private readonly toastService: ToastService,
+    private readonly fb: FormBuilder,
     private confirmationService: ConfirmationService,
     public authService: AuthService
   ) {
@@ -109,6 +121,16 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
 
   ngOnInit(): void {
     this.loadPagedEmployee(this.departmentId);
+    this.submitAddCoreForm();
+    this.initalizeFormArray();
+    this.checkExistedCategory();
+    this.categoryService.getCategoryToReview(this.departmentId).pipe(
+      tap((childCategories: CategoryToReviewResponseDto) => {
+        this.categoriesSkill = childCategories.data;
+      }),
+      catchError(err => of(err)),
+      takeUntil(this.destroyed$)
+    ).subscribe();
   }
 
   ngAfterViewInit(): void {
@@ -124,17 +146,28 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
     });
   }
 
-  public userFilter(event: AutoCompleteCompleteEvent) {
-    this.userService.getListUser(event.query).pipe(
-      filter((searchTerm) => searchTerm.length >= 1),
-      tap(() => debounceTime(1000)),
-      catchError(() => of([])),
-      takeUntil(this.destroyed$)
-    ).subscribe((result) => this.listUsersFound = result);
+  private checkExistedCategory() {
+    this.categoryService.getCategory(this.departmentId, null).pipe(
+      takeUntil(this.destroyed$),
+    ).subscribe((result) => {
+      if(result.length < 1) {
+        this.existedCategorySubject.next(true);
+      };
+      this.showButtonReview = true;
+    });
   }
 
   public openAddUserDialog() {
-    this.visibleAddUserDialog = true;
+    this.visibleAddEmployeeSubject.next(true);
+  }
+
+  public closeAddUserDialog() {
+    this.visibleAddEmployeeSubject.next(false);
+    this.loadPagedEmployee(this.departmentId);
+  }
+
+  public openEditEmployeeForm(employee: EmployeeDto) {
+    this.visibleEditEmployeeSubject.next(employee);
   }
 
   public handleDeleteEmployee(event: Event, employee: EmployeeDto) {
@@ -171,24 +204,6 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
     });
   }
 
-  public handleAddUser() {
-    this.employeeService.CreateEmployee({
-      departmentId: this.departmentId,
-      userId: this.selectedUserModel?.id ?? 0,
-      jobTitle: this.jobTitleModel ?? ''
-    }).pipe(
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      this.loadPagedEmployee(
-        this.departmentId, 
-        this.paginator?.page, 
-        this.paginator?.pageCount, 
-        this.searchTermEl?.nativeElement.value
-      );
-      this.visibleAddUserDialog = false;
-    })
-  }
-
   private loadPagedEmployee(departmentId: number, pageIndex = 0, pageSize = DefaultPagingOptions.pageSize , searchTerm?: string) {
     this.employeeService.getPagedEmployee({ 
       departmentId: departmentId, 
@@ -203,5 +218,78 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
       this.totalCountData = reponse.total;
       console.log('fetch data employees successful');
     });
+  }
+
+  public openReviewDialog(userId: number){
+    this.scoreService.getListScore({departmentId: this.departmentId, userId: userId}).pipe(
+      tap((res: ScoreDto[]) => {
+        this.userScore = res;
+        this.initializeFormEntries();
+      }),
+      catchError((err) => of(err))
+    ).subscribe();
+    this.userIdIsReviewed = userId;
+    this.reviewUserDialog = true;
+  }
+
+  public get entries(): FormArray {
+    return this.addScoreForm.get('entries') as FormArray;
+  }
+
+  private initalizeFormArray() {
+    this.addScoreForm = this.fb.group({
+      entries: this.fb.array([])
+    });
+  }
+
+  private initializeFormEntries() {
+    const entries = this.entries;
+    entries.clear();
+    this.categoriesSkill.forEach((childCategory) => {
+      childCategory.categoryChildren.forEach((categoryEnterScore, index) => {
+        entries.push(this.fb.group({
+          userId: [this.userIdIsReviewed, Validators.required],
+          departmentId: [this.departmentId, Validators.required],
+          scoreEntered: [this.userScore[index]?.scoreEntered ?? '', Validators.required],
+          categoryId: [categoryEnterScore.id, Validators.required],
+        }));
+      });
+    });
+  }
+
+  private submitAddCoreForm() {
+    this.formSubmited$.pipe(
+      tap(() => {
+        const entries = this.addScoreForm.get('entries') as FormArray;
+        this.addScore = [];
+        entries.controls.forEach((item) => {
+          if (item.value.scoreEntered !== '')
+            this.addScore.push(item.value)
+        })
+      }),
+      filter(() => {
+        if (this.addScore.length == 0)
+          return false;
+        return true;
+      }),
+      switchMap(() => {
+        let addScoreMap = this.userScore.map(scoreDefault => {
+          const matchedData = this.addScore.find(scoreEntered => scoreDefault.categoryId === scoreEntered.categoryId);
+          return matchedData ? { ...scoreDefault, ...matchedData } : scoreDefault;
+        });
+        return this.scoreService.createScore(addScoreMap).pipe(
+          tap((data: ScoreDto[]) => {
+            this.reviewUserDialog = false;
+            this.addScore = [];
+          }),
+          catchError((err) => of(err))
+        )
+      }
+      ),
+      catchError((err) => {
+        console.log(err);
+        return of(err)
+      })
+    ).subscribe();
   }
 }

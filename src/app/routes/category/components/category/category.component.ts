@@ -1,33 +1,38 @@
-import { Component, OnInit } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
+import {
+  Component,
+  OnInit,
+} from '@angular/core';
+import {
+  Router,
+  RouterLink,
+} from '@angular/router';
+
+import {
+  ConfirmationService,
+  MessageService,
+} from 'primeng/api';
+import {
+  catchError,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
+
 import { BaseComponent } from '../../../../core/components/base.component';
 import { CategoryService } from '../../../../data/services/category.service';
-import { catchError, of, switchMap, tap } from 'rxjs';
-import { CategoryResponseDto } from '../../../../data/types/category-response.dto';
-import { CategoryDto } from '../../../../data/types/category.dto';
-import { DialogModule } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
-import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { TableModule } from 'primeng/table';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import {
+  DepartmentService,
+} from '../../../../data/services/department.service';
 import { ToastService } from '../../../../data/services/toast.service';
-import { ToastModule } from 'primeng/toast';
-import { DepartmentService } from '../../../../data/services/department.service';
+import { CategoryDto } from '../../../../data/types/category.dto';
+import { SharedModule } from '../../../../shared/module/shared.module';
 
 @Component({
   selector: 'app-category',
   standalone: true,
   imports: [
-    ButtonModule,
-    DialogModule,
-    InputTextModule,
-    FormsModule,
-    RouterLink,
-    TableModule,
-    ConfirmDialogModule,
-    ToastModule
+    SharedModule,
+    RouterLink
   ],
   providers: [
     MessageService,

@@ -1,19 +1,30 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { DepartmentCreateFormComponent } from '../department-create-form/department-create-form.component';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { Observable } from 'rxjs';
-import { DepartmentDto } from '../../../../data/types/department.dto';
-import { BaseComponent } from '../../../../core/components/base.component';
-import { DepartmentService } from '../../../../data/services/department.service';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
 import { Router } from '@angular/router';
+
+import { Observable } from 'rxjs';
+
+import { BaseComponent } from '../../../../core/components/base.component';
 import { AuthService } from '../../../../data/services/auth.service';
+import {
+  DepartmentService,
+} from '../../../../data/services/department.service';
+import { DepartmentDto } from '../../../../data/types/department.dto';
+import { SharedModule } from '../../../../shared/module/shared.module';
+import {
+  DepartmentCreateFormComponent,
+} from '../department-create-form/department-create-form.component';
 
 @Component({
   selector: 'app-department',
   standalone: true,
-  imports: [DepartmentCreateFormComponent, ButtonModule, CardModule, CommonModule],
+  imports: [
+    DepartmentCreateFormComponent,
+    SharedModule
+  ],
   templateUrl: './department.component.html',
   styleUrl: './department.component.scss'
 })

@@ -79,7 +79,7 @@
             @for (category of categoriesSkill; track category) {
                 <p-panel [header]="category.name" [toggleable]="true" [collapsed]="true">
                         <div formArrayName="entries">
-                            @for (item of entries.controls; track $index) {
+                            @for (item of entries.controls; track $index){
                                 @if(category.categoryChildren[$index]?.name){
                                     <div [formGroupName]="$index">
                                         <p>{{category.categoryChildren[$index].name}}</p>

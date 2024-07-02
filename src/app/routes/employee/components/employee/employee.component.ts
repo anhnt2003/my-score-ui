@@ -221,9 +221,10 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
   }
 
   public openReviewDialog(userId: number){
-    this.scoreService.getListScore({departmentId: this.departmentId, userId: userId}).pipe(
+    this.scoreService.getListScore({departmentId: this.departmentId, userId: userId, isReview: true}).pipe(
       tap((res: ScoreDto[]) => {
         this.userScore = res;
+        console.log(res);
         this.initializeFormEntries();
       }),
       catchError((err) => of(err))
@@ -248,13 +249,15 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
     this.categoriesSkill.forEach((childCategory) => {
       childCategory.categoryChildren.forEach((categoryEnterScore, index) => {
         entries.push(this.fb.group({
-          userId: [this.userIdIsReviewed, Validators.required],
+          employeeId: [this.userIdIsReviewed, Validators.required],
           departmentId: [this.departmentId, Validators.required],
           scoreEntered: [this.userScore[index]?.scoreEntered ?? '', Validators.required],
           categoryId: [categoryEnterScore.id, Validators.required],
         }));
       });
     });
+    console.log(entries);
+    
   }
 
   private submitAddCoreForm() {
@@ -273,11 +276,7 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
         return true;
       }),
       switchMap(() => {
-        let addScoreMap = this.userScore.map(scoreDefault => {
-          const matchedData = this.addScore.find(scoreEntered => scoreDefault.categoryId === scoreEntered.categoryId);
-          return matchedData ? { ...scoreDefault, ...matchedData } : scoreDefault;
-        });
-        return this.scoreService.createScore(addScoreMap).pipe(
+        return this.scoreService.createScore(this.addScore).pipe(
           tap((data: ScoreDto[]) => {
             this.reviewUserDialog = false;
             this.addScore = [];
@@ -292,4 +291,5 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
       })
     ).subscribe();
   }
+
 }

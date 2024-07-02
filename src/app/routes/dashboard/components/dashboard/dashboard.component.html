@@ -14,10 +14,12 @@
             </div>
         </p-card>
     </div>
+   
+    }
     <div class="rating-summary">
         <p-card header="Rating Summary">
             <div class="chart">
-                <p-chart type="bar" [data]="chartData" [options]="horizontalOptions" />
+                 <p-chart type="radar" [data]="chartData" [options]="radarOptions" />
             </div>
             <div class="criteria-data-main">
                 <div class="criteria-title"></div>
@@ -25,5 +27,4 @@
             </div>
         </p-card>
     </div>
-    }
 </div>

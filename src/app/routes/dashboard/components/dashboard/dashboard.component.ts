@@ -32,9 +32,9 @@ import { EmployeeService } from '../../../../data/services/employee.service';
 export class DashboardComponent extends BaseComponent implements OnInit {
   public chartData: ChartData | undefined;
   public employeeInfoData$ = new Observable<EmployeeDto>();
-  public horizontalOptions = ChartOptions;
+  public radarOptions = ChartOptions;
   public user = this.authService.getAuthState() ?? 0;
-  // public departmentId = this.departmentService.getDepartmentnState().id ?? 0;
+  public departmentId = this.departmentService.getDepartmentnState().id ?? 0;
 
   constructor(
     private readonly departmentService: DepartmentService,
@@ -44,6 +44,10 @@ export class DashboardComponent extends BaseComponent implements OnInit {
   ) {
     super();
    }
+
+   data: any;
+
+   options: any;
   
   ngOnInit(): void {
     this.initEmployeeInfo();
@@ -51,9 +55,13 @@ export class DashboardComponent extends BaseComponent implements OnInit {
   }
 
   private initChartData() {
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue('--text-color');
+    
     this.scoreService.getListScore({
-      userId: 0,
-      departmentId: 1
+      userId: this.user.userId!,
+      departmentId: this.departmentId,
+      isReview: false
     }).pipe(
       map((dataScore) => dataScore.filter((item) => item.parentId == null)),
       tap(data => {
@@ -62,12 +70,15 @@ export class DashboardComponent extends BaseComponent implements OnInit {
           datasets: [
             {
               label: 'Skill',
-              backgroundColor: 'green',
+              borderColor: 'black',
+              pointBackgroundColor: 'red',
+              pointBorderColor: documentStyle.getPropertyValue('--bluegray-400'),
+              pointHoverBackgroundColor: textColor,
+              pointHoverBorderColor: documentStyle.getPropertyValue('--bluegray-400'),
               data: [...data.map((item) => item.scoreCalculated)]
             },
           ]
         };
-        console.log(this.chartData.datasets)
       }),
       takeUntil(this.destroyed$)
     ).subscribe();

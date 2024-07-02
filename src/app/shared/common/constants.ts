@@ -7,33 +7,25 @@ export const DefaultPagingOptions = {
     ]
 }
 
-
-
+const documentStyle = getComputedStyle(document.documentElement);
+const textColor = documentStyle.getPropertyValue('--text-color');
+const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
 export const ChartOptions = {
-    indexAxis: 'y',
     plugins: {
         legend: {
             labels: {
-                color: '#black'
+                color: textColor
             }
         }
     },
     scales: {
-        x: {
-            ticks: {
-                color: '#black'
-            },
+        r: {
             grid: {
-                color: 'rgba(255,255,255,0.2)'
-            }
-        },
-        y: {
-            ticks: {
-                color: '#black'
+                color: textColorSecondary
             },
-            grid: {
-                color: 'rgba(255,255,255,0.2)'
+            pointLabels: {
+                color: 'black'
             }
         }
     }
-}
+};

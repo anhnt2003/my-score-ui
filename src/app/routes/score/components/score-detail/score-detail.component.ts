@@ -5,7 +5,6 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
 
 import { PaginatorState } from 'primeng/paginator';
 import {
@@ -17,7 +16,6 @@ import {
 
 import { BaseComponent } from '../../../../core/components/base.component';
 import { AuthService } from '../../../../data/services/auth.service';
-import { CategoryService } from '../../../../data/services/category.service';
 import {
   DepartmentService,
 } from '../../../../data/services/department.service';
@@ -25,6 +23,7 @@ import { ScoreService } from '../../../../data/services/score.service';
 import { ScoreTableData } from '../../../../data/types/score-data-table';
 import { DefaultPagingOptions } from '../../../../shared/common/constants';
 import { SharedModule } from '../../../../shared/module/shared.module';
+import { EmployeeService } from '../../../../data/services/employee.service';
 
 @Component({
   selector: 'app-score-detail',
@@ -54,9 +53,8 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
   constructor(
     private readonly scoreService: ScoreService,
     private readonly departmentService: DepartmentService,
-    private readonly categoryService: CategoryService,
+    private readonly employeeService: EmployeeService,
     private authService: AuthService,
-    private fb: FormBuilder,
   ) {
     super();
   }
@@ -81,28 +79,29 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
       searchTerm: searchTerm
     }).pipe(
       map(response => {
-        const scoreMap = response.data.reduce((scoreTableMap, score) => {
-          const key = score.userId;
-          if (!scoreTableMap[key]) {
-            scoreTableMap[key] = {
-              email: score.email,
-              avatar: score.avatar,
-              userId: score.userId,
-              scoreArray: [{}] as [{ categoryName: string; categoryId: number; scoreCalculated: number }],
+        const scoreMap = response.data.reduce((previousValue, currentValue) => {
+          const key = currentValue.userId;
+          if (!previousValue[key]) {
+            previousValue[key] = {
+              email: currentValue.email,
+              avatar: currentValue.avatar,
+              userId: currentValue.userId,
+              scoreArray: [],
             };
           }
-          scoreTableMap[key].scoreArray.push({
-            categoryName: score.categoryName,
-            categoryId: score.categoryId,
-            scoreCalculated: score.scoreCalculated
-          });
-          return scoreTableMap;
+          previousValue[key].scoreArray = [...previousValue[key].scoreArray, {
+            categoryName: currentValue.categoryName,
+            categoryId: currentValue.categoryId,
+            scoreCalculated: currentValue.scoreCalculated
+          }];
+          return previousValue;
         }, {} as { [key: number]: ScoreTableData });
         return Object.values(scoreMap);
       }),
       takeUntil(this.destroyed$)
     ).subscribe((response: ScoreTableData[]) => {
       this.scoreDetailData = response;
+      console.log(this.scoreDetailData);
       console.log('fetch data score employees successful');
     },
     );

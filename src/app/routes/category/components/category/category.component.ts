@@ -62,7 +62,10 @@ export class CategoryComponent extends BaseComponent implements OnInit{
   }
   
   ngOnInit(): void {
-    this.categoryService.getCategory(this.departmentId, null).pipe(
+    this.categoryService.getCategoryByParentId({
+      departmentId: this.departmentId,
+      parentId: undefined
+    }).pipe(
       tap((parentCategory: CategoryDto[]) => {
         this.parentCategory = parentCategory;
         console.log(parentCategory);
@@ -85,12 +88,15 @@ export class CategoryComponent extends BaseComponent implements OnInit{
       departmentId: this.departmentId
     }));
 
-    this.categoryService.postCategory(categoryReq).pipe(
+    this.categoryService.createCategory(categoryReq).pipe(
       tap(() => {
         this.addCateVisible = false;
       }),
       switchMap(() => {
-        return this.categoryService.getCategory(this.departmentId, null).pipe(
+        return this.categoryService.getCategoryByParentId({
+          departmentId: this.departmentId,
+          parentId: undefined
+        }).pipe(
           tap((parentCategory: CategoryDto[]) => {
             this.parentCategory = parentCategory;
           }),
@@ -113,14 +119,17 @@ export class CategoryComponent extends BaseComponent implements OnInit{
     }).pipe(
       tap((res) => {
         this.fixNameVisible[categoryId] = false;
-        this.toastService.success(res.message);
+        this.toastService.success("");
       }),
       catchError((err) => {
         this.toastService.fail(err);
         return of(err);
       }),
       switchMap(() => {
-        return this.categoryService.getCategory(this.departmentId, null).pipe(
+        return this.categoryService.getCategoryByParentId({
+          departmentId: this.departmentId,
+          parentId: undefined
+        }).pipe(
           tap((parentCategory: CategoryDto[]) => {
             this.parentCategory = parentCategory;
           }),
@@ -135,13 +144,16 @@ export class CategoryComponent extends BaseComponent implements OnInit{
   deleteCategory(categoryId: number){
     this.categoryService.deleteCategory(categoryId).pipe(
       tap((res) => {
-        this.toastService.success(res.message)
+        this.toastService.success("")
       }),
       catchError((err) => {
         return of(err);
       }),
       switchMap(() => {
-        return this.categoryService.getCategory(this.departmentId, null).pipe(
+        return this.categoryService.getCategoryByParentId({
+          departmentId: this.departmentId,
+          parentId: undefined
+        }).pipe(
           tap((parentCategory: CategoryDto[]) => {
             this.parentCategory = parentCategory;
           }),

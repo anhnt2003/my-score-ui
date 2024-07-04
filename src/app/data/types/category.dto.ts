@@ -12,4 +12,6 @@ export interface CategoryDto {
     createdDate?: Date;
 
     modifiedDate?: Date;
+
+    children?: CategoryDto[];
 }

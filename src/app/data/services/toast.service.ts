@@ -11,11 +11,11 @@ export class ToastService {
     private messageService : MessageService
   ) { }
 
-  success(content : string){
-    this.messageService.add({ severity: 'success', summary: 'Thành công', detail: content, life: 3000});
+  public success(content : string){
+    this.messageService.add({ severity: 'success', summary: 'Thành công', detail: content });
   }
 
-  fail(content : string){
-    this.messageService.add({ severity: 'error', summary: 'Thất bại', detail: content});
+  public fail(content : string){
+    this.messageService.add({ severity: 'error', summary: 'Thất bại', detail: content });
   }
 }

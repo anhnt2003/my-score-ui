@@ -10,7 +10,7 @@
                 </p-iconField>
             </div>
         </ng-template>
-        <ng-template pTemplate="header" let-data>
+        <ng-template pTemplate="header">
             <tr>
                 <th>Email</th>
                 @for(column of scoreDetailData[0]?.scoreArray; track column; let i = $index) {
@@ -36,7 +36,18 @@
     </p-table>
     <div class="pagination">
         <span class="mx-1 text-color">số lượng trong trang: </span>
-        <p-dropdown [options]="pagingOptions.pageSizeOptions" optionLabel="label" optionValue="value" [(ngModel)]="pagingOptions.pageSize" (ngModelChange)="0" />
-        <p-paginator [rows]="pagingOptions.pageSize" [totalRecords]="120" (onPageChange)="paginatorSubject.next()" [showCurrentPageReport]="true" currentPageReportTemplate="{first} - {last} of {totalRecords}" [showPageLinks]="false" [showFirstLastIcon]="false"></p-paginator>
+        <p-dropdown [options]="pagingOptions.pageSizeOptions" 
+                    optionLabel="label" 
+                    optionValue="value" 
+                    [(ngModel)]="pagingOptions.pageSize" 
+                    (ngModelChange)="0" />
+        <p-paginator [rows]="pagingOptions.pageSize" 
+                     [totalRecords]="120" 
+                     (onPageChange)="paginatorSubject.next()" 
+                     [showCurrentPageReport]="true" 
+                     currentPageReportTemplate="{first} - {last} of {totalRecords}" 
+                     [showPageLinks]="false" 
+                     [showFirstLastIcon]="false">
+        </p-paginator>
     </div>
 </div>

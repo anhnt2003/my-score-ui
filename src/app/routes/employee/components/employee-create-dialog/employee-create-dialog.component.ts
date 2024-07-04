@@ -33,12 +33,14 @@ import { SharedModule } from '../../../../shared/module/shared.module';
 })
 export class EmployeeCreateDialogComponent extends BaseComponent {
 
-  @Input() visibleDialog: boolean = false;
-  @Output() visibleEventChange = new EventEmitter<boolean>();
   public listUsersFound: UserDto[] = [];
-  public selectedUserModel: UserDto | undefined;
-  public jobTitleModel: string | undefined;
+  public selectedUserModel!: UserDto;
+  public jobTitleModel!: string;
   public departmentId = this.departmentService.getDepartmentnState().id ?? 0;
+  
+  @Input() visibleDialog: boolean = false;
+
+  @Output() visibleEventChange = new EventEmitter<boolean>();
 
   constructor(
     private readonly userService: UserService,
@@ -60,11 +62,11 @@ export class EmployeeCreateDialogComponent extends BaseComponent {
   public handleAddUser() {
     this.employeeService.CreateEmployee({
       departmentId: this.departmentId,
-      userId: this.selectedUserModel?.id ?? 0,
-      jobTitle: this.jobTitleModel ?? ''
+      userId: this.selectedUserModel?.id,
+      jobTitle: this.jobTitleModel
     }).pipe(
       takeUntil(this.destroyed$)
-    ).subscribe(() => this.visibleEventChange.next(false))
+    ).subscribe(() => this.closeDialog());
   }
 
   public closeDialog() {

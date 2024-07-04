@@ -6,17 +6,29 @@
         height: 60px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
         margin: 0 25px;
+        .select-department {
+            display: flex;
+            .p-dropdown {
+                width: 10rem;
+                margin-right: 24px;
+            }
 
-        .p-dropdown {
-            width: 10rem;
+            .select-department-link {
+                text-decoration: none;
+                color: #ffffff;
+                line-height: 100%;
+            }
         }
+
+        
 
         .action {
             display: flex;
             align-items: center;
             justify-content: end;
-            width: 100%;
+
         }
 
         img {

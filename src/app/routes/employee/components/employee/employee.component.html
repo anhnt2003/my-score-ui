@@ -10,10 +10,18 @@
             </p-dialog>
         </div>
     }
-    @if(visibleEditEmployee$ | async; as employeeData) {
+    @if(visibleEditEmployee$ | async; as visible) {
         <app-employee-edit-form 
-        [employeeData]="employeeData"
-        (visibilityChange)="this.visibleEditEmployeeSubject.next(null)"></app-employee-edit-form>
+        [visibleEditEmployeeForm]="visible"
+        [employeeData]="employeeInfoData"
+        (visibleEventChange)="this.visibleEditEmployeeSubject.next(false)"></app-employee-edit-form>
+    }
+    @if(visibleReviewEmployee$ | async; as visible) {
+        <app-employee-review-form
+        [visiableReviewEmployeeForm]="visible"
+        [employeeReview]="employeeInfoData"
+        [categories]="categoryData"
+        (visibleEventChange)="this.visibleReviewEmployeeSubject.next(false)"></app-employee-review-form>
     }
     <p-table #dt2 [value]="employeeData" dataKey="id">
         <ng-template pTemplate="caption">
@@ -49,11 +57,9 @@
                 <td>{{ data.jobTitle }}</td>
                 <td>
                     <div class="button-action">
-                        @if(this.showButtonReview) {
-                            <p-button (click)="openReviewDialog(data.userId)" label="Đánh giá nhân viên" /> 
-                        }
+                        <p-button (click)="openReviewDialog(data)" label="Đánh giá nhân viên" severity="success"/> 
                         <p-button (click)="openEditEmployeeForm(data)" label="Edit" />
-                        <p-button (click)="handleDeleteEmployee($event, data)" label="Delete" severity="danger" [outlined]="true" />
+                        <p-button (click)="handleDeleteEmployee($event, data)" label="Delete" severity="danger"/>
                     </div>
                 </td>
             </tr>
@@ -66,31 +72,24 @@
     </p-table>
     <div class="pagination">
         <span class="mx-1 text-color">số lượng trong trang: </span>
-        <p-dropdown [options]="pagingOptions.pageSizeOptions" optionLabel="label" optionValue="value" [(ngModel)]="pagingOptions.pageSize" (ngModelChange)="perPageModel" />
-        <p-paginator [first]="perPageModel" [rows]="pagingOptions.pageSize" #paginator [totalRecords]="totalCountData" (onPageChange)="paginatorSubject.next()" [showCurrentPageReport]="true" currentPageReportTemplate="{first} - {last} of {totalRecords}" [showPageLinks]="false"
-            [showFirstLastIcon]="false"></p-paginator>
+        <p-dropdown [options]="pagingOptions.pageSizeOptions"
+                    optionLabel="label" 
+                    optionValue="value" 
+                    [(ngModel)]="pagingOptions.pageSize" 
+                    (ngModelChange)="perPageModel" />
+        <p-paginator [first]="perPageModel" 
+                     [rows]="pagingOptions.pageSize" 
+                     #paginator 
+                     [totalRecords]="totalCountData" 
+                     (onPageChange)="paginatorSubject.next()" 
+                     [showCurrentPageReport]="true" 
+                     currentPageReportTemplate="{first} - {last} of {totalRecords}" 
+                     [showPageLinks]="false"
+                     [showFirstLastIcon]="false">
+        </p-paginator>
     </div>
     <div class="confirm-dialog">
         <p-toast position="bottom-right" />
         <p-confirmDialog/>
     </div>
-    <p-dialog class="dialog-container container" header="Nhập điểm nhân viên" [modal]="true" [(visible)]="reviewUserDialog" [draggable]="false">
-        <form [formGroup]="addScoreForm" (submit)="formSubmitSubject.next()">
-            @for (category of categoriesSkill; track category) {
-                <p-panel [header]="category.name" [toggleable]="true" [collapsed]="true">
-                        <div formArrayName="entries">
-                            @for (item of entries.controls; track $index) {
-                                @if(category.categoryChildren[$index]?.name){
-                                    <div [formGroupName]="$index">
-                                        <p>{{category.categoryChildren[$index].name}}</p>
-                                        <p-inputNumber (value)="userScore[$index].scoreEntered" formControlName="scoreEntered" mode="decimal" [minFractionDigits]="1"/>
-                                    </div>
-                                }
-                            }
-                        </div>
-                </p-panel>
-            }
-            <p-button type="submit" label="Xác nhận" />
-        </form>
-    </p-dialog>
 </div>

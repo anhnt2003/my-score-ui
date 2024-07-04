@@ -5,6 +5,7 @@ import { PagedResult } from '../types/paged-result';
 import { environment } from '../../../environments/environment';
 import { EmployeeDto } from '../types/employee.dto';
 import { CreateEmployeeReq } from '../types/create-employee-req';
+import { UpdateEmployeeReq } from '../types/update-employee.req';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,10 @@ export class EmployeeService {
     });
   }
 
+  public updateEmployee(params: UpdateEmployeeReq) {
+    return this.httpClient.put<EmployeeDto>(`${environment.apiEndpoint}/employee`, params);
+  }
+
   public getEmployeeById(userId: number) {
     return this.httpClient.get<EmployeeDto>(`${environment.apiEndpoint}/employee/${userId}`);
   }
@@ -28,6 +33,6 @@ export class EmployeeService {
   }
 
   public DeleteEmployee(employeeId: number) {
-    return this.httpClient.delete(`${environment.apiEndpoint}/employee/${employeeId}`);
+    return this.httpClient.delete<string>(`${environment.apiEndpoint}/employee/${employeeId}`);
   }
 }

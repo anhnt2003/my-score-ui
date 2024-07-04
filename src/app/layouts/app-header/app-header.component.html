@@ -1,8 +1,11 @@
 <div class="container-header">
     <div class="main-account">
-        @if(selectDepartmentData$ | async; as departments) {
-            <p-dropdown [options]="departments" formControlName="selectedDepartment" optionLabel="name"/>
-        }
+        <div class="select-department">
+            @if(selectDepartmentData$ | async; as departments) {
+            <p-dropdown [options]="departments" (onChange)="changeValueDropDown($event)" [(ngModel)]="selectedDepartment" optionLabel="name"/>
+            }
+            <p-button (click)="linkToChooseDepartment()" label="Thêm, chọn phòng ban"></p-button>
+        </div>
         <div class="action" (click)="op.toggle($event)">
             <img [src]="authService.authState.value?.avatar">
             <div class="panel">

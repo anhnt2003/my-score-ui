@@ -62,7 +62,10 @@ export class ChildCategoryComponent extends BaseComponent implements OnInit{
     this.id = this.activatedRoute.snapshot.paramMap.get('id') ?? '1';
 
     if (this.id != ":id"){
-      this.categoryService.getCategory(this.departmentId, parseInt(this.id)).pipe(
+      this.categoryService.getCategoryByParentId({
+        departmentId: this.departmentId,
+        parentId: parseInt(this.id)
+      }).pipe(
         tap((childCategories: CategoryDto[]) => {
           this.categories = childCategories;
         }),
@@ -81,7 +84,7 @@ export class ChildCategoryComponent extends BaseComponent implements OnInit{
         name: this.categoryForm.value.categoryName,
         weighting: this.categoryForm.value.weighting,
         departmentId: this.departmentId,
-        parentId: parseInt(this.id)
+        parentId: parseInt(this.id),
       })
       this.categoryForm.patchValue({categoryName: "", weighting: 0})
       this.inputViewable = false;
@@ -90,7 +93,7 @@ export class ChildCategoryComponent extends BaseComponent implements OnInit{
   }
 
   postCategory(){
-    this.categoryService.postCategory(this.categories).pipe(
+    this.categoryService.createCategory(this.categories).pipe(
       tap((res) => {
         console.log(res);
         this.inputViewable = true;

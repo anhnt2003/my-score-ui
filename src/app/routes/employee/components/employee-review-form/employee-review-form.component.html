@@ -1,0 +1,25 @@
+<p-dialog class="dialog-container container" header="Nhập điểm nhân viên" [modal]="true"
+    [visible]="visiableReviewEmployeeForm" (visibleChange)="closeDialog()" [draggable]="false">
+    <form [formGroup]="addScoreForm" (submit)="formSubmitSubject.next()">
+        <ng-container formArrayName="entries">
+            <p-tree [value]="categories" selectionMode="single">
+                <ng-template let-category pTemplate="default">
+                    @for(entry of entries.controls; track entry; let i = $index) {
+                    <ng-container>
+                        @if(category.id === entry.value.categoryId) {
+                        <ng-container [formGroupName]="i">
+                            <p>{{ category.name }}</p>
+                            @if(!category.children || category.children.length === 0) {
+                            <p-inputNumber formControlName="scoreEntered" mode="decimal"
+                                [minFractionDigits]="1"></p-inputNumber>
+                            }
+                        </ng-container>
+                        }
+                    </ng-container>
+                    }
+                </ng-template>
+            </p-tree>
+        </ng-container>
+        <p-button type="submit" label="Xác nhận"></p-button>
+    </form>
+</p-dialog>

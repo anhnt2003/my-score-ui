@@ -6,6 +6,7 @@ import { ScoreDto } from '../types/score.dto';
 import { PagedResult } from '../types/paged-result';
 import { GetListScoreReq } from '../types/get-list-score-req';
 import { GetPagedScoreReq } from '../types/get-paged-score-req';
+import { CreateScoreReq } from '../types/create-score-req';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class ScoreService {
 
   constructor(private readonly httpClient: HttpClient) { }
 
-  public createScore(params: ScoreDto[]) {
+  public createScore(params: CreateScoreReq[]) {
     return this.httpClient.post<ScoreDto[]>(`${environment.apiEndpoint}/score`, params)
   }
   

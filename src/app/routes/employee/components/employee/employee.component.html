@@ -1,12 +1,13 @@
 <div class="container-employee-department">
     @if(existedCategory$ | async; as existedCategory) {
         <div class="alert-dialog">
-            <p-dialog header="Header" [visible]="existedCategory" [modal]="true" (visibleChange)="existedCategorySubject.next(false)"
-                [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [style]="{ width: '50vw' }" [draggable]="true"
-                [resizable]="false">
-                <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, deleniti, tenetur eaque aliquam eligendi numquam doloremque nisi laboriosam dolore qui, molestias ut rerum maiores voluptate doloribus exercitationem ipsam? Ea, in.
-                </p>
+            <p-dialog header="Header" 
+                      [visible]="!existedCategory" 
+                      [modal]="true" 
+                      (visibleChange)="existedCategorySubject.next(false)"
+                      [draggable]="false"
+                      [resizable]="false">
+                      <p>Bạn chưa </p>
             </p-dialog>
         </div>
     }
@@ -20,7 +21,8 @@
         <app-employee-review-form
         [visiableReviewEmployeeForm]="visible"
         [employeeReview]="employeeInfoData"
-        [categories]="categoryData"
+        [categories]="categories"
+        [categoryTree]="categoryTree"
         (visibleEventChange)="this.visibleReviewEmployeeSubject.next(false)"></app-employee-review-form>
     }
     <p-table #dt2 [value]="employeeData" dataKey="id">

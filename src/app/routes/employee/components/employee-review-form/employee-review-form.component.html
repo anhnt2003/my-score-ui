@@ -2,7 +2,7 @@
     [visible]="visiableReviewEmployeeForm" (visibleChange)="closeDialog()" [draggable]="false">
     <form [formGroup]="addScoreForm" (submit)="formSubmitSubject.next()">
         <ng-container formArrayName="entries">
-            <p-tree [value]="categories" selectionMode="single">
+            <p-tree [value]="categoryTree" selectionMode="single">
                 <ng-template let-category pTemplate="default">
                     @for(entry of entries.controls; track entry; let i = $index) {
                     <ng-container>

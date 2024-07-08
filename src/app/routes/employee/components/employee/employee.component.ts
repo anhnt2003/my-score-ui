@@ -60,7 +60,8 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
 
   public employeeData: EmployeeDto[] = [];
   public employeeInfoData!: EmployeeDto;
-  public categoryData: CategoryDto[] = [];
+  public categories: CategoryDto[] = [];
+  public categoryTree: CategoryDto[] = [];
   public totalCountData: number = 0;
   public pagingOptions = DefaultPagingOptions;
   public perPageModel: number = 0;
@@ -114,6 +115,7 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
   private checkExistedCategory() {
     this.categoryService.getCategory(this.departmentId).pipe(
       tap((response) => {
+        this.categories = response;
         const categoryTree = response.reduce((pre, cur) => {
           pre[cur.id!] = { ...cur, children: [] };
           return pre
@@ -121,7 +123,7 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
 
         response.forEach(item => {
           if (item.parentId === null) {
-            this.categoryData.push(categoryTree[item.id!]);
+            this.categoryTree.push(categoryTree[item.id!]);
           } else {
             categoryTree[item.parentId!].children!.push(categoryTree[item.id!]);
           }

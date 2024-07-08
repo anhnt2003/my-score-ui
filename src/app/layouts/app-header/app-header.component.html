@@ -2,7 +2,7 @@
     <div class="main-account">
         <div class="select-department">
             @if(selectDepartmentData$ | async; as departments) {
-            <p-dropdown [options]="departments" (onChange)="changeValueDropDown($event)" [(ngModel)]="selectedDepartment" optionLabel="name"/>
+            <p-dropdown name="selectedDepartment" [options]="departments" (onChange)="changeValueDropDown($event)" [(ngModel)]="selectedDepartment" optionLabel="name"/>
             }
             <p-button (click)="linkToChooseDepartment()" label="Thêm, chọn phòng ban"></p-button>
         </div>

@@ -51,6 +51,11 @@ li {
   top: 0;
   right: 24px !important;
   left: auto !important;
+  --overlayArrowLeft: 82.890625px !important;
+  
+  .p-overlaypanel-content {
+    padding: 68px;
+  }
 }
 
 .p-overlaypanel:after, .p-overlaypanel:before {

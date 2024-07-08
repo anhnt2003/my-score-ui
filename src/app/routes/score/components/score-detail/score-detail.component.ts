@@ -43,6 +43,7 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
   public paginatorSubject = new Subject<void>();
   public userId = this.authService.getAuthState().userId ?? 0;
   public departmentId = this.departmentService.getDepartmentnState().id ?? 0;
+  public displayColumns: string[] = [];
 
   private paginatorChanged$ = this.paginatorSubject.asObservable();
   private searchTermChanged$ = this.searchTermSubject.asObservable();
@@ -100,6 +101,7 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
       }),
       takeUntil(this.destroyed$)
     ).subscribe((response: ScoreTableData[]) => {
+      this.displayColumns = response[0].scoreArray.map(x => x.categoryName);
       this.scoreDetailData = response;
       console.log(this.scoreDetailData);
       console.log('fetch data score employees successful');

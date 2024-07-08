@@ -1,5 +1,16 @@
 app-employee,
 app-score-detail {
+    .info {
+        display: flex;
+        align-items: center;
+        img {
+            max-width: 38px;
+            cursor: pointer;
+            border-radius: 100%;
+            margin-right: 8px;
+        }
+    }
+    
     .container-employee-department,
     .container-score-detail {
         height: 100%;
@@ -16,7 +27,7 @@ app-score-detail {
         }
     }
     th {
-        width: 22%;
+        width: 10%;
     }
     p-table {
         min-width: 75rem;
@@ -97,16 +108,5 @@ app-score-detail {
     width: 100%;
     button {
         margin-left: 10px;
-    }
-}
-
-.info {
-    display: flex;
-    align-items: center;
-    img {
-        max-width: 38px;
-        cursor: pointer;
-        border-radius: 100%;
-        margin-right: 8px;
     }
 }

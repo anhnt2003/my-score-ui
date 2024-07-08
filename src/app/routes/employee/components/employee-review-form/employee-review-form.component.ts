@@ -25,6 +25,7 @@ export class EmployeeReviewFormComponent extends BaseComponent implements OnInit
 
   @Input() visiableReviewEmployeeForm: boolean = false;
   @Input() categories!: CategoryDto[];
+  @Input() categoryTree!: CategoryDto[];
   @Input() scores!: ScoreDto[];
   @Input() employeeReview!: EmployeeDto;
 
@@ -43,10 +44,10 @@ export class EmployeeReviewFormComponent extends BaseComponent implements OnInit
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    const inputChanged = changes['categories'];
+    const inputChanged = changes['categoryTree'];
     if(!!inputChanged) {
       this.visiableReviewEmployeeForm = true;
-      this.flatCategoriesAndBuildForm(this.categories);
+      this.buildFormArray(this.categories);
     };
     console.log(this.addScoreForm.value);
   }
@@ -63,24 +64,17 @@ export class EmployeeReviewFormComponent extends BaseComponent implements OnInit
     ).subscribe(() => this.closeDialog());
   }
 
-  private flatCategoriesAndBuildForm(categories: CategoryDto[]): void {
+  private buildFormArray(categories: CategoryDto[]) {
     categories.forEach(category => {
-      this.buildFormArray(category);
-      if (category.children && category.children.length > 0) {
-        this.flatCategoriesAndBuildForm(category.children);
-      }
-    });
-  }
-
-  private buildFormArray(category: CategoryDto) {
-    const addscoreForm = this.fb.group({
-      departmentId: [category.departmentId, Validators.required],
-      userId: [this.employeeReview.userId, Validators.required],
-      scoreEntered: [, Validators.nullValidator],
-      categoryId: [category.id, Validators.required],
-      categoryName: [category.name, Validators.required]
-    });
-    this.entries.push(addscoreForm);
+      const addscoreForm = this.fb.group({
+        departmentId: [category.departmentId, Validators.required],
+        userId: [this.employeeReview.userId, Validators.required],
+        scoreEntered: [, Validators.nullValidator],
+        categoryId: [category.id, Validators.required],
+        categoryName: [category.name, Validators.required]
+      });
+      this.entries.push(addscoreForm);
+    })
   }
 
   public get entries(): FormArray {

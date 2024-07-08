@@ -13,21 +13,24 @@
         <ng-template pTemplate="header">
             <tr>
                 <th>Email</th>
-                @for(column of scoreDetailData[0]?.scoreArray; track column; let i = $index) {
-                <th>{{ column.categoryName }}</th>
+                @for(column of displayColumns; track column) {
+                <th>{{ column }}</th>
                 }
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-data>
             <tr>
-                <td>{{ data.email }}</td>
-                @for(column of scoreDetailData; track column; let i = $index) {
-                    @for(score of column.scoreArray; track score; let j = $index) {
-                       <td>{{ score.scoreCalculated }}</td>
+                <td class="info">
+                    <img [src]="data.avatar" /> 
+                    {{ data.email }}
+                </td>
+                @for(score of data.scoreArray; track score; let i = $index) {
+                    @if(displayColumns[i] == score.categoryName) {
+                        <td>{{ score.scoreCalculated }}</td>
                     }
                 }
             </tr>
-            </ng-template>
+        </ng-template>
         <ng-template pTemplate="emptymessage">
             <tr>
                 <td colspan="5">Chưa có dữ liệu</td>

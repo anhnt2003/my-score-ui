@@ -9,7 +9,7 @@ import { BaseComponent } from '../../core/components/base.component';
 import { AuthService } from '../../data/services/auth.service';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { DepartmentDto } from '../../data/types/department.dto';
 import { DepartmentService } from '../../data/services/department.service';
 import { CommonModule } from '@angular/common';
@@ -30,7 +30,7 @@ import { SharedModule } from '../../shared/module/shared.module';
 export class AppHeaderComponent extends BaseComponent implements OnInit {
 
   public sidebarVisible = false;
-  public selectedDepartment: DepartmentDto = JSON.parse(sessionStorage[LOCAL_STORAGE_DEPARTMENT_KEY]);
+  public selectedDepartment: DepartmentDto | undefined;
   public selectDepartmentData$ = new Observable<DepartmentDto[]>(); 
   
   constructor(
@@ -42,7 +42,13 @@ export class AppHeaderComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.selectDepartmentData$ = this.departmentService.getListDepartment(this.authService.getAuthState().userId!);
+    this.selectDepartmentData$ = this.departmentService.getListDepartment(this.authService.getAuthState().userId!).pipe(
+      tap((response) => {
+        // hơi bựa thôi fix chạy đc đã 
+        const departmentCurrent = response.find(department => department.id === this.departmentService.getDepartmentnState().id);
+        this.selectedDepartment = departmentCurrent;
+      })
+    );
   }
 
   public logOut() {

@@ -1,3 +1,5 @@
+import { ScoreDataTableDetail } from "./score-data-table-detail";
+
 export interface ScoreTableData {
     email: string;
 
@@ -5,12 +7,5 @@ export interface ScoreTableData {
 
     userId: number;
 
-    scoreArray:
-    {
-        categoryName: string;
-
-        categoryId: number;
-
-        scoreCalculated: number;
-    }[];
+    scoreArray: ScoreDataTableDetail[];
 }

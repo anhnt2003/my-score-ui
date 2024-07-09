@@ -63,8 +63,7 @@ export class CategoryComponent extends BaseComponent implements OnInit{
   
   ngOnInit(): void {
     this.categoryService.getCategoryByParentId({
-      departmentId: this.departmentId,
-      parentId: undefined
+      departmentId: this.departmentId
     }).pipe(
       tap((parentCategory: CategoryDto[]) => {
         this.parentCategory = parentCategory;
@@ -94,8 +93,7 @@ export class CategoryComponent extends BaseComponent implements OnInit{
       }),
       switchMap(() => {
         return this.categoryService.getCategoryByParentId({
-          departmentId: this.departmentId,
-          parentId: undefined
+          departmentId: this.departmentId
         }).pipe(
           tap((parentCategory: CategoryDto[]) => {
             this.parentCategory = parentCategory;
@@ -127,8 +125,7 @@ export class CategoryComponent extends BaseComponent implements OnInit{
       }),
       switchMap(() => {
         return this.categoryService.getCategoryByParentId({
-          departmentId: this.departmentId,
-          parentId: undefined
+          departmentId: this.departmentId
         }).pipe(
           tap((parentCategory: CategoryDto[]) => {
             this.parentCategory = parentCategory;
@@ -151,8 +148,7 @@ export class CategoryComponent extends BaseComponent implements OnInit{
       }),
       switchMap(() => {
         return this.categoryService.getCategoryByParentId({
-          departmentId: this.departmentId,
-          parentId: undefined
+          departmentId: this.departmentId
         }).pipe(
           tap((parentCategory: CategoryDto[]) => {
             this.parentCategory = parentCategory;

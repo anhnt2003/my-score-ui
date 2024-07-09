@@ -1,4 +1,12 @@
 <div class="container-score-detail">
+    @if(visibleReviewEmployee$ | async; as visible) {
+        <app-employee-score-review-form
+        [visiableReviewEmployeeForm]="visible"
+        [userIdReview]="userInfoData.id"
+        [categories]="categories"
+        [scores]="scoreDetailDataDetail"
+        (visibleEventChange)="this.visibleReviewEmployeeSubject.next(false)"></app-employee-score-review-form>
+    }
     <p-table #dt2 [value]="scoreDetailData" dataKey="id">
         <ng-template pTemplate="caption">
             <div class="search">
@@ -16,6 +24,7 @@
                 @for(column of displayColumns; track column) {
                 <th>{{ column }}</th>
                 }
+                <th></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-data>
@@ -29,6 +38,13 @@
                         <td>{{ score.scoreCalculated }}</td>
                     }
                 }
+                <td>
+                    <div class="button-action-score">
+                        @if(data.userId != userId) {
+                            <p-button (click)="openReviewDialog(data)" label="Cập nhật điểm" severity="warning" />
+                            }
+                    </div>
+                </td>
             </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
@@ -45,7 +61,7 @@
                     [(ngModel)]="pagingOptions.pageSize" 
                     (ngModelChange)="0" />
         <p-paginator [rows]="pagingOptions.pageSize" 
-                     [totalRecords]="120" 
+                     [totalRecords]="totalCountData" 
                      (onPageChange)="paginatorSubject.next()" 
                      [showCurrentPageReport]="true" 
                      currentPageReportTemplate="{first} - {last} of {totalRecords}" 

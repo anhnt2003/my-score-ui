@@ -37,7 +37,7 @@ import {
   EmployeeCreateDialogComponent,
 } from '../employee-create-dialog/employee-create-dialog.component';
 import { EmployeeEditFormComponent } from '../employee-edit-form/employee-edit-form.component';
-import { EmployeeReviewFormComponent } from '../employee-review-form/employee-review-form.component';
+import { EmployeeScoreReviewFormComponent } from '../../../../shared/components/employee-score-review-form/employee-score-review-form.component';
 
 @Component({
   selector: 'app-employee',
@@ -46,7 +46,7 @@ import { EmployeeReviewFormComponent } from '../employee-review-form/employee-re
     SharedModule,
     EmployeeCreateDialogComponent,
     EmployeeEditFormComponent,
-    EmployeeReviewFormComponent
+    EmployeeScoreReviewFormComponent
   ],
   providers: [
     ConfirmationService,
@@ -61,7 +61,6 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
   public employeeData: EmployeeDto[] = [];
   public employeeInfoData!: EmployeeDto;
   public categories: CategoryDto[] = [];
-  public categoryTree: CategoryDto[] = [];
   public totalCountData: number = 0;
   public pagingOptions = DefaultPagingOptions;
   public perPageModel: number = 0;
@@ -114,21 +113,7 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
 
   private checkExistedCategory() {
     this.categoryService.getCategory(this.departmentId).pipe(
-      tap((response) => {
-        this.categories = response;
-        const categoryTree = response.reduce((pre, cur) => {
-          pre[cur.id!] = { ...cur, children: [] };
-          return pre
-        }, [] as CategoryDto[]);
-
-        response.forEach(item => {
-          if (item.parentId === null) {
-            this.categoryTree.push(categoryTree[item.id!]);
-          } else {
-            categoryTree[item.parentId!].children!.push(categoryTree[item.id!]);
-          }
-        });
-      }),
+      tap((response) => this.categories = response),
       takeUntil(this.destroyed$),
     ).subscribe((result) => {
       if (result.length < 1) {
@@ -149,10 +134,6 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
   public closeAddUserDialog() {
     this.visibleAddEmployeeSubject.next(false);
     this.loadPagedEmployee(this.departmentId);
-  }
-
-  public openReviewEmployeeForm(categories: CategoryDto[]) {
-    this.visibleReviewEmployeeSubject.next(true);
   }
 
   public openEditEmployeeForm(employee: EmployeeDto) {

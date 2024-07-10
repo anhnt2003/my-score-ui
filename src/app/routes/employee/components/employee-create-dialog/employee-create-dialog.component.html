@@ -1,5 +1,5 @@
 <div class="container-employee-create-form">
-    <p-dialog header="Thêm nhân viên vào team" [modal]="true" [visible]="visibleDialog" (visibleChange)="closeDialog()">
+    <p-dialog header="Thêm nhân viên vào team" [modal]="true" [visible]="visibleDialog" (visibleChange)="closeDialog(false)">
         <span class="text-span">Tìm kiếm bằng username, hoặc email</span>
         <p-autoComplete [(ngModel)]="selectedUserModel" placeholder="Tìm kiếm" [suggestions]="listUsersFound" (completeMethod)="userFilter($event)" field="userName">
             <ng-template let-user pTemplate="item">

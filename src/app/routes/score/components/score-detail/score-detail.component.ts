@@ -9,6 +9,9 @@ import {
 import { PaginatorState } from 'primeng/paginator';
 import {
   BehaviorSubject,
+  debounceTime,
+  delay,
+  finalize,
   map,
   merge,
   Subject,
@@ -32,6 +35,8 @@ import { CategoryDto } from '../../../../data/types/category.dto';
 import { CategoryService } from '../../../../data/services/category.service';
 import { UserDto } from '../../../../data/types/user.dto';
 import { ScoreDataTableDetail } from '../../../../data/types/score-data-table-detail';
+import { LoadingService } from '../../../../data/services/loading.service';
+import { response } from 'express';
 
 @Component({
   selector: 'app-score-detail',
@@ -69,6 +74,7 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
     private readonly scoreService: ScoreService,
     private readonly departmentService: DepartmentService,
     private readonly categoryService: CategoryService,
+    public loadingService: LoadingService,
     private authService: AuthService,
   ) {
     super();
@@ -102,7 +108,15 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
     this.visibleReviewEmployeeSubject.next(true);
   }
 
+  public closeReviewDialog(eventClosed: boolean) {
+    this.visibleReviewEmployeeSubject.next(false);
+    if(eventClosed) {
+      this.loadPagedScoreEmployee(this.departmentId);
+    }  
+  }
+
   private loadPagedScoreEmployee(departmentId: number, pageIndex = 0, pageSize = DefaultPagingOptions.pageSize, searchTerm?: string) {
+    this.loadingService.showLoading();
     this.scoreService.getPagedScore({
       departmentId: departmentId,
       take: pageSize,
@@ -131,14 +145,14 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
         }, {} as { [key: number]: ScoreTableData });
         return Object.values(scoreMap);
       }),
+      tap((response) => {
+        this.displayColumns = response[0]?.scoreArray.map(x => x.categoryName);
+        this.scoreDetailData = response;
+        this.totalCountData = response.length;
+      }),
+      delay(1000),
+      finalize(() => this.loadingService.hideLoading()),
       takeUntil(this.destroyed$)
-    ).subscribe((response: ScoreTableData[]) => {
-      this.displayColumns = response[0]?.scoreArray.map(x => x.categoryName);
-      this.scoreDetailData = response;
-      this.totalCountData = response.length;
-      console.log(this.scoreDetailData);
-      console.log('fetch data score employees successful');
-    },
-    );
+    ).subscribe(() => console.log('fetch data score employees successful'));
   }
 }

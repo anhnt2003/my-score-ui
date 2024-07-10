@@ -1,5 +1,5 @@
 <p-dialog class="dialog-container container" header="Nhập điểm nhân viên" [modal]="true"
-    [visible]="visiableReviewEmployeeForm" (visibleChange)="closeDialog()" [draggable]="false">
+    [visible]="visiableReviewEmployeeForm" (visibleChange)="closeDialog(false)" [draggable]="false">
     <form [formGroup]="addScoreForm" (submit)="formSubmitSubject.next()">
         <ng-container formArrayName="entries">
             <p-tree [value]="categoryTree" selectionMode="single">

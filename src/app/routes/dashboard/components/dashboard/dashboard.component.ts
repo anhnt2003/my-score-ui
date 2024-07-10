@@ -33,8 +33,8 @@ export class DashboardComponent extends BaseComponent implements OnInit {
   public chartData: ChartData | undefined;
   public employeeInfoData$ = new Observable<EmployeeDto>();
   public horizontalOptions = ChartOptions;
-  public user = this.authService.getAuthState() ?? 0;
-  // public departmentId = this.departmentService.getDepartmentnState().id ?? 0;
+  public user = this.authService.getAuthState();
+  public departmentId = this.departmentService.getDepartmentnState().id ?? 0;
 
   constructor(
     private readonly departmentService: DepartmentService,
@@ -52,8 +52,8 @@ export class DashboardComponent extends BaseComponent implements OnInit {
 
   private initChartData() {
     this.scoreService.getListScore({
-      userId: 0,
-      departmentId: 1
+      userId: this.user.userId ?? 0,
+      departmentId: this.departmentId
     }).pipe(
       map((dataScore) => dataScore.filter((item) => item.parentId == null)),
       tap(data => {
@@ -74,6 +74,6 @@ export class DashboardComponent extends BaseComponent implements OnInit {
   }
 
   private initEmployeeInfo() {
-    this.employeeInfoData$ = this.employeeService.getEmployeeById(this.user.userId ?? 0);
+    this.employeeInfoData$ = this.employeeService.getEmployeeById(this.user.userId ?? 0, this.departmentId);
   }
 }

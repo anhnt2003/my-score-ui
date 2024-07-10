@@ -66,10 +66,10 @@ export class EmployeeCreateDialogComponent extends BaseComponent {
       jobTitle: this.jobTitleModel
     }).pipe(
       takeUntil(this.destroyed$)
-    ).subscribe(() => this.closeDialog());
+    ).subscribe(() => this.closeDialog(true));
   }
 
-  public closeDialog() {
-    this.visibleEventChange.emit(false);
+  public closeDialog(event: boolean) {
+    this.visibleEventChange.emit(event);
   }
 }

@@ -73,7 +73,7 @@ export class EmployeeScoreReviewFormComponent extends BaseComponent implements O
         }
       }),
       takeUntil(this.destroyed$)
-    ).subscribe(() => this.closeDialog());
+    ).subscribe(() => this.closeDialog(true));
   }
 
   private buildCreateFormArray() {
@@ -123,7 +123,7 @@ export class EmployeeScoreReviewFormComponent extends BaseComponent implements O
     return this.addScoreForm.controls['entries'] as FormArray;
   }
 
-  public closeDialog() {
-    this.visibleEventChange.emit(false);
+  public closeDialog(event: boolean) {
+    this.visibleEventChange.emit(event);
   }
 }

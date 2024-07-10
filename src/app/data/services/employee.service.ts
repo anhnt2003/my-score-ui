@@ -24,8 +24,10 @@ export class EmployeeService {
     return this.httpClient.put<EmployeeDto>(`${environment.apiEndpoint}/employee`, params);
   }
 
-  public getEmployeeById(userId: number) {
-    return this.httpClient.get<EmployeeDto>(`${environment.apiEndpoint}/employee/${userId}`);
+  public getEmployeeById(userId: number, departmentId: number) {
+    return this.httpClient.get<EmployeeDto>(`${environment.apiEndpoint}/employee`, {
+      params: { userId, departmentId }
+    });
   }
 
   public CreateEmployee(params: CreateEmployeeReq) {

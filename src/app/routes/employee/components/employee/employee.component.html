@@ -1,4 +1,9 @@
 <div class="container-employee-department">
+    @if(loadingService.loading$ | async) {
+        <div class="progress-spinner">
+            <p-progressSpinner ariaLabel="loading"/>
+        </div>
+    }
     @if(existedCategory$ | async; as existedCategory) {
         <div class="alert-dialog">
             <p-dialog header="Header" 
@@ -39,7 +44,7 @@
                     <button icon="pi pi-plus" pButton pRipple (click)="openAddUserDialog()" label="Thêm nhân viên" class="p-button-success">
                 </button>
                 @if(visibleAddEmployee$ | async; as visible) {
-                    <app-employee-create-dialog [visibleDialog]="visible" (visibleEventChange)="closeAddUserDialog()"></app-employee-create-dialog>
+                    <app-employee-create-dialog [visibleDialog]="visible" (visibleEventChange)="closeAddUserDialog($event)"></app-employee-create-dialog>
                     }
                 </div>
             </div>

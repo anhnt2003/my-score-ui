@@ -23,6 +23,7 @@ import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { TreeModule } from 'primeng/tree';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @NgModule({
     imports: [],
@@ -47,7 +48,8 @@ import { TreeModule } from 'primeng/tree';
         OverlayPanelModule, 
         DropdownModule, 
         PanelMenuModule,
-        TreeModule
+        TreeModule,
+        ProgressSpinnerModule
     ]
 })
 export class SharedModule { }

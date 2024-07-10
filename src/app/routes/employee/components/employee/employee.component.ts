@@ -14,6 +14,8 @@ import { PaginatorState } from 'primeng/paginator';
 import {
   BehaviorSubject,
   catchError,
+  delay,
+  finalize,
   merge,
   of,
   Subject,
@@ -38,6 +40,7 @@ import {
 } from '../employee-create-dialog/employee-create-dialog.component';
 import { EmployeeEditFormComponent } from '../employee-edit-form/employee-edit-form.component';
 import { EmployeeScoreReviewFormComponent } from '../../../../shared/components/employee-score-review-form/employee-score-review-form.component';
+import { LoadingService } from '../../../../data/services/loading.service';
 
 @Component({
   selector: 'app-employee',
@@ -87,6 +90,7 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
     private readonly categoryService: CategoryService,
     private readonly departmentService: DepartmentService,
     private readonly toastService: ToastService,
+    public loadingService: LoadingService,
     private confirmationService: ConfirmationService,
     public authService: AuthService
   ) {
@@ -131,9 +135,11 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
     this.visibleAddEmployeeSubject.next(true);
   }
 
-  public closeAddUserDialog() {
+  public closeAddUserDialog(eventClosed: boolean) {
     this.visibleAddEmployeeSubject.next(false);
-    this.loadPagedEmployee(this.departmentId);
+    if(eventClosed) {
+      this.loadPagedEmployee(this.departmentId);
+    }
   }
 
   public openEditEmployeeForm(employee: EmployeeDto) {
@@ -176,18 +182,21 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
   }
 
   private loadPagedEmployee(departmentId: number, pageIndex = 0, pageSize = DefaultPagingOptions.pageSize , searchTerm: string = '') {
+    this.loadingService.showLoading();
     this.employeeService.getPagedEmployee({ 
       departmentId: departmentId, 
       take: pageSize, 
       skip: pageSize * pageIndex, 
       searchTerm: searchTerm
     }).pipe(
-      takeUntil(this.destroyed$)
+      tap((response) => {
+        this.employeeData = response.data;
+        this.totalCountData = response.total;
+      }),
+      delay(1000),
+      takeUntil(this.destroyed$),
+      finalize(() => this.loadingService.hideLoading())
     )
-    .subscribe(reponse => {
-      this.employeeData = reponse.data;
-      this.totalCountData = reponse.total;
-      console.log('fetch data employees successful');
-    });
+    .subscribe(() => console.log('fetch data employees successful'));
   }
 }

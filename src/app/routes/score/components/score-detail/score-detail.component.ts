@@ -121,6 +121,7 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
             };
           }
           previousValue[key].scoreArray = [...previousValue[key].scoreArray, {
+            id: currentValue.id,
             categoryName: currentValue.categoryName,
             categoryId: currentValue.categoryId,
             scoreEntered: currentValue.scoreEntered,
@@ -132,7 +133,7 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
       }),
       takeUntil(this.destroyed$)
     ).subscribe((response: ScoreTableData[]) => {
-      this.displayColumns = response[0].scoreArray.map(x => x.categoryName);
+      this.displayColumns = response[0]?.scoreArray.map(x => x.categoryName);
       this.scoreDetailData = response;
       this.totalCountData = response.length;
       console.log(this.scoreDetailData);

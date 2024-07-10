@@ -1,4 +1,6 @@
 export interface ScoreDataTableDetail {
+    id: number;
+    
     categoryName: string;
 
     categoryId: number;

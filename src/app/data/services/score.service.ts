@@ -7,6 +7,7 @@ import { PagedResult } from '../types/paged-result';
 import { GetListScoreReq } from '../types/get-list-score-req';
 import { GetPagedScoreReq } from '../types/get-paged-score-req';
 import { CreateScoreReq } from '../types/create-score-req';
+import { UpdateScoreReq } from '../types/update-score-req';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,10 @@ export class ScoreService {
 
   public createScore(params: CreateScoreReq[]) {
     return this.httpClient.post<ScoreDto[]>(`${environment.apiEndpoint}/score`, params)
+  }
+
+  public updateScore(params: UpdateScoreReq[]) {
+    return this.httpClient.put<ScoreDto[]>(`${environment.apiEndpoint}/score`, params)
   }
   
   public getListScore(params: GetListScoreReq) {

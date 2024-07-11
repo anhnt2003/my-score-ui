@@ -29,7 +29,7 @@
         [categories]="categories"
         (visibleEventChange)="this.visibleReviewEmployeeSubject.next(false)"></app-employee-score-review-form>
     }
-    <p-table #dt2 [value]="employeeData" dataKey="id">
+    <p-table #dt2 [value]="employeeData" dataKey="id" >
         <ng-template pTemplate="caption">
             <div class="header-action">
                 <div class="search">
@@ -37,7 +37,7 @@
                         <p-inputIcon>
                             <i class="fa fa-search"></i>
                         </p-inputIcon>
-                        <input pInputText type="text" #searchTerm (keyup)="searchTermSubject.next(searchTerm.value)" placeholder="Tìm kiếm" />
+                        <input pInputText type="text" #searchTerm (keyup)="searchTermSubject.next(searchTerm.value)" placeholder="Tìm kiếm theo email" />
                     </p-iconField>
                 </div>
                 <div class="button-add">
@@ -52,7 +52,7 @@
         <ng-template pTemplate="header">
             <tr>
                 <th>Email</th>
-                <th>JobTitle</th>
+                <th>Vị trí công việc</th>
                 <th></th>
             </tr>
         </ng-template>
@@ -66,8 +66,8 @@
                         @if(data.userId != userId) {
                             <p-button (click)="openReviewDialog(data)" label="Đánh giá nhân viên" severity="success"/> 
                         }
-                        <p-button (click)="openEditEmployeeForm(data)" label="Edit" />
-                        <p-button (click)="handleDeleteEmployee($event, data)" label="Delete" severity="danger"/>
+                        <p-button (click)="openEditEmployeeForm(data)" label="Sửa thông tin" />
+                        <p-button (click)="handleDeleteEmployee($event, data)" label="Xoá nhân viên" severity="danger"/>
                     </div>
                 </td>
             </tr>
@@ -82,16 +82,15 @@
         <span class="mx-1 text-color">số lượng trong trang: </span>
         <p-dropdown [options]="pagingOptions.pageSizeOptions"
                     optionLabel="label" 
-                    optionValue="value" 
-                    [(ngModel)]="pagingOptions.pageSize" 
-                    (ngModelChange)="perPageModel" />
-        <p-paginator [first]="perPageModel" 
-                     [rows]="pagingOptions.pageSize" 
+                    optionValue="value"
+                    #paginator 
+                    (onChange)="paginatorSubject.next()"/>
+        <p-paginator [rows]="pagingOptions.pageSize" 
                      #paginator 
+                     (onPageChange)="paginatorSubject.next()"
                      [totalRecords]="totalCountData" 
-                     (onPageChange)="paginatorSubject.next()" 
                      [showCurrentPageReport]="true" 
-                     currentPageReportTemplate="{first} - {last} of {totalRecords}" 
+                     currentPageReportTemplate="{first} - {last} trên {totalRecords}" 
                      [showPageLinks]="false"
                      [showFirstLastIcon]="false">
         </p-paginator>

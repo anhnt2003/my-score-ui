@@ -13,14 +13,14 @@
         [scores]="scoreDetailDataDetail"
         (visibleEventChange)="closeReviewDialog($event)"></app-employee-score-review-form>
     }
-    <p-table #dt2 [value]="scoreDetailData" dataKey="id">
+    <p-table [value]="scoreDetailData" dataKey="id" (sortFunction)="this.sortingSubject.next($event)" [customSort]="true">
         <ng-template pTemplate="caption">
             <div class="search">
                 <p-iconField iconPosition="left" class="ml-auto">
                     <p-inputIcon>
                         <i class="fa fa-search"></i>
                     </p-inputIcon>
-                    <input pInputText type="text" placeholder="Tìm kiếm" />
+                    <input pInputText type="text" #searchTerm (keyup)="searchTermSubject.next(searchTerm.value)" placeholder="Tìm kiếm theo email"/>
                 </p-iconField>
             </div>
         </ng-template>
@@ -28,7 +28,7 @@
             <tr>
                 <th>Email</th>
                 @for(column of displayColumns; track column) {
-                <th>{{ column }}</th>
+                <th #sorting pSortableColumn="{{ column }}">{{ column }}<p-sortIcon field="{{ column }}"/></th>
                 }
                 <th></th>
             </tr>
@@ -61,17 +61,18 @@
     </p-table>
     <div class="pagination">
         <span class="mx-1 text-color">số lượng trong trang: </span>
-        <p-dropdown [options]="pagingOptions.pageSizeOptions" 
+        <p-dropdown [options]="pagingOptions.pageSizeOptions"
                     optionLabel="label" 
                     optionValue="value" 
-                    [(ngModel)]="pagingOptions.pageSize" 
-                    (ngModelChange)="0" />
+                    [(ngModel)]="pagingOptions.pageSizeOptions" 
+                    (ngModelChange)="paginatorSubject.next()" />
         <p-paginator [rows]="pagingOptions.pageSize" 
+                     #paginator 
+                     (onPageChange)="paginatorSubject.next()"
                      [totalRecords]="totalCountData" 
-                     (onPageChange)="paginatorSubject.next()" 
                      [showCurrentPageReport]="true" 
-                     currentPageReportTemplate="{first} - {last} of {totalRecords}" 
-                     [showPageLinks]="false" 
+                     currentPageReportTemplate="{first} - {last} trên {totalRecords}" 
+                     [showPageLinks]="false"
                      [showFirstLastIcon]="false">
         </p-paginator>
     </div>

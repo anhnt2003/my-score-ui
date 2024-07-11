@@ -9,7 +9,6 @@ import {
 import { PaginatorState } from 'primeng/paginator';
 import {
   BehaviorSubject,
-  debounceTime,
   delay,
   finalize,
   map,
@@ -26,17 +25,15 @@ import {
 } from '../../../../data/services/department.service';
 import { ScoreService } from '../../../../data/services/score.service';
 import { ScoreTableData } from '../../../../data/types/score-data-table';
-import { DefaultPagingOptions } from '../../../../shared/common/constants';
+import { DefaultPagingOptions, SortOrderOptions } from '../../../../shared/common/constants';
 import { SharedModule } from '../../../../shared/module/shared.module';
-import { EmployeeService } from '../../../../data/services/employee.service';
 import { EmployeeScoreReviewFormComponent } from '../../../../shared/components/employee-score-review-form/employee-score-review-form.component';
-import { EmployeeDto } from '../../../../data/types/employee.dto';
 import { CategoryDto } from '../../../../data/types/category.dto';
 import { CategoryService } from '../../../../data/services/category.service';
 import { UserDto } from '../../../../data/types/user.dto';
 import { ScoreDataTableDetail } from '../../../../data/types/score-data-table-detail';
 import { LoadingService } from '../../../../data/services/loading.service';
-import { response } from 'express';
+import { SortEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-score-detail',
@@ -58,6 +55,7 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
   public totalCountData: number = 0;
   public searchTermSubject = new Subject<string>();
   public paginatorSubject = new Subject<void>();
+  public sortingSubject = new Subject<void>();
   public userId = this.authService.getAuthState().userId ?? 0;
   public departmentId = this.departmentService.getDepartmentnState().id ?? 0;
   public displayColumns: string[] = [];
@@ -66,9 +64,11 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
 
   private paginatorChanged$ = this.paginatorSubject.asObservable();
   private searchTermChanged$ = this.searchTermSubject.asObservable();
+  private sortingChanged$ = this.sortingSubject.asObservable();
 
-  @ViewChild('searchTerm') searchTermEl: ElementRef | undefined;
-  @ViewChild('paginator') paginator: PaginatorState | undefined;
+  @ViewChild('searchTerm') searchTermEl!: ElementRef;
+  @ViewChild('paginator') paginator!: PaginatorState;
+  @ViewChild('sorting') sorting!: SortEvent;
 
   constructor(
     private readonly scoreService: ScoreService,
@@ -92,7 +92,14 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
     merge(this.searchTermChanged$, this.paginatorChanged$).pipe(
       takeUntil(this.destroyed$)
     ).subscribe(() => {
-      this.loadPagedScoreEmployee(this.departmentId);
+      this.loadPagedScoreEmployee(
+        this.departmentId,
+        this.paginator?.page,
+        this.paginator?.pageCount,
+        this.searchTermEl?.nativeElement.value,
+        this.sorting?.field,
+        this.sorting?.order?.toString()
+      );
     });
   }
 
@@ -115,13 +122,15 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
     }  
   }
 
-  private loadPagedScoreEmployee(departmentId: number, pageIndex = 0, pageSize = DefaultPagingOptions.pageSize, searchTerm?: string) {
+  private loadPagedScoreEmployee(departmentId: number, pageIndex = 0, pageSize = DefaultPagingOptions.pageSize, searchTerm: string = '', sortField: string = '', sortOrder: string = '') {
     this.loadingService.showLoading();
     this.scoreService.getPagedScore({
       departmentId: departmentId,
       take: pageSize,
       skip: pageIndex * pageSize,
-      searchTerm: searchTerm
+      searchTerm: searchTerm,
+      sortField: sortField,
+      sortOrder: sortOrder
     }).pipe(
       map(response => {
         const scoreMap = response.data.reduce((previousValue, currentValue) => {
@@ -150,7 +159,7 @@ export class ScoreDetailComponent extends BaseComponent implements OnInit, After
         this.scoreDetailData = response;
         this.totalCountData = response.length;
       }),
-      delay(1000),
+      delay(800),
       finalize(() => this.loadingService.hideLoading()),
       takeUntil(this.destroyed$)
     ).subscribe(() => console.log('fetch data score employees successful'));

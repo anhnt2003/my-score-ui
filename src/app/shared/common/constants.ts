@@ -1,10 +1,15 @@
 export const DefaultPagingOptions = {
     pageSize: 30,
     pageSizeOptions: [
-        { label: 5, value: 5 },
-        { label: 10, value: 10 },
-        { label: 15, value: 15 }
+        { label: 10, value: 5 },
+        { label: 20, value: 10 },
+        { label: 30, value: 15 }
     ]
+}
+
+export enum SortOrderOptions {
+    ASC = 1,
+    DESC = -1
 }
 
 

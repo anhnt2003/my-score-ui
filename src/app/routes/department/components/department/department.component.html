@@ -2,6 +2,11 @@
     <div class="title">
         <p>MY SCORE</p>
     </div>
+    @if(loadingService.loading$ | async) {
+        <div class="progress-spinner">
+            <p-progressSpinner ariaLabel="loading"/>
+        </div>
+    }
     <div class="container-department">
         <div class="create-cp-card">
             <app-department-create-form [visibleDialog]="dialogVisibleValue"

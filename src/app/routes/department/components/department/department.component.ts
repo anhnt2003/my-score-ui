@@ -5,7 +5,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs';
+import { Observable, delay, tap } from 'rxjs';
 
 import { BaseComponent } from '../../../../core/components/base.component';
 import { AuthService } from '../../../../data/services/auth.service';
@@ -17,6 +17,7 @@ import { SharedModule } from '../../../../shared/module/shared.module';
 import {
   DepartmentCreateFormComponent,
 } from '../department-create-form/department-create-form.component';
+import { LoadingService } from '../../../../data/services/loading.service';
 
 @Component({
   selector: 'app-department',
@@ -35,6 +36,7 @@ export class DepartmentComponent extends BaseComponent implements OnInit {
 
   constructor(
     private readonly departmentService: DepartmentService,
+    public loadingService: LoadingService,
     private readonly authService: AuthService,
     private router: Router
   ) {
@@ -46,7 +48,11 @@ export class DepartmentComponent extends BaseComponent implements OnInit {
   }
 
   private initListDepartments() {
-    this.listDepartmentsData$ = this.departmentService.getListDepartment(this.userId);
+    this.loadingService.showLoading();
+    this.listDepartmentsData$ = this.departmentService.getListDepartment(this.userId).pipe(
+      delay(800),
+      tap(() => this.loadingService.hideLoading()),
+    );
   }
 
   public handleOpenDialog() {

@@ -66,7 +66,6 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
   public categories: CategoryDto[] = [];
   public totalCountData: number = 0;
   public pagingOptions = DefaultPagingOptions;
-  public perPageModel: number = 0;
   public userId = this.authService.getAuthState().userId ?? 0;
   public departmentId = this.departmentService.getDepartmentnState().id ?? 0;
   public searchTermSubject = new Subject<string>();
@@ -193,7 +192,7 @@ export class EmployeeComponent extends BaseComponent implements OnInit, AfterVie
         this.employeeData = response.data;
         this.totalCountData = response.total;
       }),
-      delay(1000),
+      delay(800),
       takeUntil(this.destroyed$),
       finalize(() => this.loadingService.hideLoading())
     )
